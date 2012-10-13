@@ -89,6 +89,6 @@ Specify coordinate parameters and `include`
 
 ## Parameters
 
-'point' - array of field names that contain x and y coordinates. Example: `point: [lat, lng]`
-'include' - List of fields to include as properties. All other fields will be ignored
-'exclude' - List of fields to that shouldn't be included in properties. All other fields will be added (besides geometry fields)
+- `point` - array of field names that contain x and y coordinates. Example: `point: [lat, lng]`
+- `include` - List of fields to include as properties. All other fields will be ignored
+- `exclude` - List of fields to that shouldn't be included in properties. All other fields will be added (besides geometry fields)
