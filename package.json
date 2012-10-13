@@ -1,0 +1,22 @@
+{
+  "name": "geojson",
+  "description": "Convert an array of geographic objects to GeoJSON",
+  "author": "Casey Thomas <c@cpt.ph>",
+  "version": "0.0.1",
+  "main": "./geojson",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/caseypt/node-geojson.git"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "mocha": "*"
+  },
+  "engines": {
+    "node": "0.8.x"
+  },
+  "scripts": {
+    "test": "mocha"
+  }
+}
