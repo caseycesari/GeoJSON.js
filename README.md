@@ -1,6 +1,6 @@
 # node-geojson
 
-Convert an array of objects with coordinates/geometry to [GeoJSON](http://geojson.org/) feature collection. Only works with point data at the moment. 
+Convert an array of objects with coordinates/geometry to a [GeoJSON](http://geojson.org/) feature collection. Only works with point data at the moment. 
 
 ## Installation
 
@@ -13,6 +13,7 @@ Convert an array of objects with coordinates/geometry to [GeoJSON](http://geojso
 ## Example Usage
 
 Sample Data
+    
     var data = [
       {
         name: 'Location A',
@@ -35,6 +36,7 @@ Sample Data
     ];
 
 Specify only coordinate parameters
+    
     GeoJSON.parse(data, { point: ['lng', 'lat'] });
 
       { "type": "FeatureCollection",
@@ -64,6 +66,7 @@ Specify only coordinate parameters
       }
   
 Specify coordinate parameters and `include`
+    
     GeoJSON.parse(data, { point: ['lng', 'lat'], include: ['name']});
 
       { "type": "FeatureCollection",
