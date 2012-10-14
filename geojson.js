@@ -3,35 +3,19 @@ exports.version = '0.0.5';
 exports.defaults = {};
 
 exports.parse = function(objects, params) {
-  var geojson = baseObj();
+  var geojson = {"type": "FeatureCollection", "features": []};
   setGeom(params);
 
   objects.forEach(function(item){
-    var feature = buildFeature(item, params);
-    geojson.features.push(feature);
+    geojson.features.push(getFeature(item, params));
   });
 
   return geojson;
 };
 
 // Helper functions
-var geoms = [
-  'Point',
-  'MultiPoint',
-  'LineString',
-  'MultiLineString',
-  'Polygon',
-  'MultiPolygon'
-];
-
-var geomAttrs = [];
-
-function baseObj() {
-  return {
-    "type": "FeatureCollection",
-    "features": []
-  };
-}
+var geoms = ['Point', 'MultiPoint', 'LineString', 'MultiLineString', 'Polygon', 'MultiPolygon'],
+    geomAttrs = [];
 
 function setGeom(params) {
   params.geom = {};
@@ -59,7 +43,7 @@ function setGeomAttrList(params) {
   }
 }
 
-function buildFeature(item, params) {
+function getFeature(item, params) {
   var feature = { "type": "Feature" };
 
   feature.geometry = buildGeom(item, params);
@@ -74,8 +58,7 @@ function buildGeom(item, params) {
   for(var attr in item) {
     if(item.hasOwnProperty(attr) && geomAttrs.indexOf(attr) !== -1) {
       for(var gtype in params.geom) {
-        if(params.geom.hasOwnProperty(gtype) &&
-          (attr === params.geom[gtype] || attr === params.geom[gtype][0])) {
+        if(params.geom.hasOwnProperty(gtype) && (attr === params.geom[gtype] || attr === params.geom[gtype][0])) {
           geom.type = gtype;
 
           if (typeof params.geom[gtype] === 'string') {
