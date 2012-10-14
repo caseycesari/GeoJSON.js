@@ -12,7 +12,9 @@ Convert an array of objects with geometry to a [GeoJSON](http://geojson.org/) fe
 
 ## Example Usage
 
-Sample point-based data
+The library has one method--`parse`.
+
+Take the example data below:
     
     var data = [
       {
@@ -38,7 +40,7 @@ Sample point-based data
       }
     ];
 
-Specify only coordinate parameters
+Convert it to GeoJSON:
     
     GeoJSON.parse(data, {Point: ['lng', 'lat']});
 
@@ -68,7 +70,7 @@ Specify only coordinate parameters
         ]
       }
   
-Specify coordinate parameters and `include`
+Convert the example data to GeoJSON, and only include the `name` attribute in `properties` for each feature.
     
     GeoJSON.parse(data, {Point: ['lng', 'lat'], include: ['name']});
 
@@ -90,7 +92,7 @@ Specify coordinate parameters and `include`
         ]
       }
 
-Data with different geometry types
+The `parse` method can handle data with different geometry types
 
     var data2 = [
       { 
@@ -112,7 +114,7 @@ Data with different geometry types
       }
     ];
 
-For each geometry type, specify which attribute contains the geometry data
+For each geometry type, specify which attribute contains the geometric data
 
     GeoJSON.parse(data2, {'Point': ['x', 'y'], 'LineString': 'line', 'Polygon': 'polygon'});
 
