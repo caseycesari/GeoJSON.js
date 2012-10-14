@@ -7,41 +7,43 @@ describe('GeoJSON', function() {
       {
         name: 'Location A',
         category: 'Store',
-        street: 'Market',
         lat: 39.984,
-        lng: -75.343
+        lng: -75.343,
+        street: 'Market'
       },
       {
         name: 'Location B',
         category: 'House',
-        street: 'Broad',
         lat: 39.284,
-        lng: -75.833
+        lng: -75.833,
+        street: 'Broad'
       },
       {
         name: 'Location C',
         category: 'Office',
-        street: 'South',
         lat: 39.123,
-        lng: -74.534
+        lng: -74.534,
+        street: 'South'
       }
     ];
 
     var output1 = GeoJSON.parse(data, {Point: ['lat', 'lng']});
-    console.log(JSON.stringify(output1));
 
     it('should return output with 3 features', function(){
       assert.equal(output1.features.length, 3, 'Output should have 3 features');
     });
 
-    it('should not include coords/geom fields in feature properties', function(){
-      assert.equal(output1.features[0].properties.lat, undefined, "Properties shoudn't have lat field");
-      assert.equal(output1.features[0].properties.lng, undefined, "Properties shoudn't have lng field");
+    it('should not include geometry fields in feature properties', function(){
+      assert.equal(output1.features[0].properties.lat, undefined, "Properties shoudn't have lat attribute");
+      assert.equal(output1.features[0].properties.lng, undefined, "Properties shoudn't have lng attribute");
     });
 
-    it('should include all properties besides coords/geom fields when include or exclude isn\'t set', function() {
-      assert.notEqual(output1.features[0].properties.name, undefined, "Properties should have name field");
-      assert.notEqual(output1.features[0].properties.category, undefined, "Properties should have category field");
+    it('should include all properties besides geometry attributes when include or exclude isn\'t set', function() {
+      output1.features.forEach(function(feature){
+        assert.notEqual(feature.properties.name, undefined, "Properties should have name attribute");
+        assert.notEqual(feature.properties.category, undefined, "Properties should have category attribute");
+        assert.notEqual(feature.properties.street, undefined, "Properties should have street attribute");
+      });
     });
 
     var output2 = GeoJSON.parse(data, {Point: ['lat', 'lng'], include: ['name']});
@@ -55,6 +57,30 @@ describe('GeoJSON', function() {
 
     it('should only include attributes that not are listed in the exclude parameter', function(){
       assert.equal(output3.features[0].properties.name, undefined, "Properites shouldn't have 'name' attribute");
+    });
+
+    it('should be able to handle Point geom with x,y stored in one or two attributes', function(){
+      var twoAttrs = [{
+        name: 'test location',
+        y: -74,
+        x: 39.0
+      }];
+
+      var geoTwoAttrs = GeoJSON.parse(twoAttrs, {Point: ['x', 'y']});
+
+      assert.equal(geoTwoAttrs.features[0].geometry.coordinates[0], -74, 'Y value should match input value');
+      assert.equal(geoTwoAttrs.features[0].geometry.coordinates[1], 39.0, 'X value should match input value');
+
+      var oneAttr = [{
+        name: 'test location',
+        coords: [-74, 39],
+        foo: 'bar'
+      }];
+
+      var geoOneAttr = GeoJSON.parse(oneAttr, {Point: 'coords'});
+      
+      assert.equal(geoOneAttr.features[0].geometry.coordinates[0], -74, 'Y value should match input value');
+      assert.equal(geoOneAttr.features[0].geometry.coordinates[1], 39.0, 'X value should match input value');
     });
 
     // Based off example spec at http://geojson.org/geojson-spec.html
@@ -79,7 +105,6 @@ describe('GeoJSON', function() {
     ];
 
     var output4 = GeoJSON.parse(data2, {'Point': ['x', 'y'], 'LineString': 'line', 'Polygon': 'polygon'});
-    console.log(JSON.stringify(output4));
 
     it('should be able to handle data with different geometry types', function(){
       assert.equal(output4.features.length, 3, 'Output should have 3 features');
