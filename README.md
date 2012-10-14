@@ -12,7 +12,7 @@ Convert an array of objects with geometry to a [GeoJSON](http://geojson.org/) fe
 
 ## Example Usage
 
-The library has one method--`parse`.
+The library has one method, `parse`, which takes an array of objects with geometry data as the first parameter, and an object consisting of settings for the second parameter.
 
 Take the example data below:
     
@@ -153,6 +153,60 @@ For each geometry type, specify which attribute contains the geometric data
             "prop1": {
                 "this": "that"
               }
+          }
+        }
+      ]
+    }
+
+You can also specify default settings if you will be parsing mutliple datasets with similiar attributes.
+
+    var data1 = [{
+      name: 'Location A',
+      street: 'Market',
+      x: 34,
+      y: -75
+    }];
+
+    var data2 = [{
+      name: 'Location B',
+      date: '11/23/2012',
+      x: 54,
+      y: -98
+    }];
+
+    GeoJSON.defaults = {Point: ['x', 'y'], include: ['name']};
+
+    GeoJSON.parse(data1);
+
+    {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [-75, 34]
+          },
+          "properties": {
+            "name": "Location A"
+          }
+        }
+      ]
+    }
+
+    GeoJSON.parse(data2);
+
+    {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [-98, 54]
+          },
+          "properties": {
+            "name": "Location B"
           }
         }
       ]
