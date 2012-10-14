@@ -4,7 +4,11 @@ Convert an array of objects with geometry to a [GeoJSON](http://geojson.org/) fe
 
 ## Installation
 
+For node, use npm:
+
     npm install geojson
+
+Client-side version is coming soon.
 
 ## Getting Started
 
@@ -241,3 +245,8 @@ Except for `Point`, which can be specified with a field name or an array of fiel
     GeoJSON.parse(data, {Point: 'coords'});
 
 The valid geometry types are `Point`, `MultiPoint`, `LineString`, `MultiLineString`, `Polygon`, and `MultiPolygon`.
+
+geojson.js also supports the optional GeoJSON properties `bbox` and `crs`.
+
+- `crs` - A string identifying a coordinate reference system. Only named CRSs are supported at the moment. [More information](http://geojson.org/geojson-spec.html#named-crs)
+- `bbox` - A bounding box for the feature collection. An array with the following format: `[y1, x1, y2, x2]` [More information](http://geojson.org/geojson-spec.html#bounding-boxes)
