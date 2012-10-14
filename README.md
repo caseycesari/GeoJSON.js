@@ -169,7 +169,7 @@ The geometry parameters specify which attribute(s) contain(s) the geographic/geo
 
     'ParameterName': 'attributeName'
 
-Except for Point, which uses an array, i.e:
+Except for `Point`, which uses an array, i.e:
 
     'Point': ['lat', 'lng'] // As of now, make sure to specify the X coordinate before the Y
 
