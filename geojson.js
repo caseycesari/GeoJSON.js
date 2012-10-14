@@ -4,11 +4,10 @@ exports.defaults = {};
 
 exports.parse = function(objects, params) {
   var geojson = baseObj();
-  var conf = setConf(params, objects[0]);
-  getGeomAttrList(params);
+  setGeom(params);
 
   objects.forEach(function(item){
-    var feature = buildFeature(item, conf);
+    var feature = buildFeature(item, params);
     geojson.features.push(feature);
   });
 
@@ -34,9 +33,22 @@ function baseObj() {
   };
 }
 
-function getGeomAttrList(params) {
+function setGeom(params) {
+  params.geom = {};
+
   for(var param in params) {
-    if(params.hasOwnProperty(param) && geoms.indexOf(param) !== -1) {
+    if(params.hasOwnProperty(param) && geoms.indexOf(param) !== -1){
+      params.geom[param] = params[param];
+      delete params[param];
+    }
+  }
+
+  setGeomAttrList(params.geom);
+}
+
+function setGeomAttrList(params) {
+  for(var param in params) {
+    if(params.hasOwnProperty(param)) {
       if(typeof params[param] === 'string') {
         geomAttrs.push(params[param]);
       } else if (typeof params[param] === 'object') { // Array of coordinates for Point
@@ -47,62 +59,29 @@ function getGeomAttrList(params) {
   }
 }
 
-function getAttrList(params, item) {
-  if (params.include) {
-    return params.include;
-  } else if (params.exclude) {
-    var attrs = [];
-    for(var attr in item) {
-      if (item.hasOwnProperty(attr) &&
-        params.exclude.indexOf(attr) === -1 &&
-        geomAttrs.indexOf(attr) === -1) {
-        attrs.push(attr);
-      }
-    }
-    return attrs;
-  } else {
-    return 'all';
-  }
-}
-
-function setConf(params, item) {
-  var conf = {};
-  conf.geom = {};
-
-  for(var param in params) {
-    if(params.hasOwnProperty(param) && geoms.indexOf(param) !== -1){
-      conf.geom[param] = params[param];
-    }
-  }
-
-  conf.attrs = getAttrList(params, item);
-
-  return conf;
-}
-
-function buildFeature(item, conf) {
+function buildFeature(item, params) {
   var feature = { "type": "Feature" };
 
-  feature.geometry = buildGeom(item, conf);
-  feature.properties = buildProps(item, conf);
+  feature.geometry = buildGeom(item, params);
+  feature.properties = buildProps(item, params);
 
   return feature;
 }
 
-function buildGeom(item, conf) {
+function buildGeom(item, params) {
   var geom = {};
 
   for(var attr in item) {
     if(item.hasOwnProperty(attr) && geomAttrs.indexOf(attr) !== -1) {
-      for(var gtype in conf.geom) {
-        if(conf.geom.hasOwnProperty(gtype) &&
-          (attr === conf.geom[gtype] || attr === conf.geom[gtype][0])) {
+      for(var gtype in params.geom) {
+        if(params.geom.hasOwnProperty(gtype) &&
+          (attr === params.geom[gtype] || attr === params.geom[gtype][0])) {
           geom.type = gtype;
 
-          if (typeof conf.geom[gtype] === 'string') {
-            geom.coordinates = item[conf.geom[gtype]];
+          if (typeof params.geom[gtype] === 'string') {
+            geom.coordinates = item[params.geom[gtype]];
           } else { // Point with geom stored in two attributes
-            geom.coordinates = [item[conf.geom[gtype][1]], item[conf.geom[gtype][0]]];
+            geom.coordinates = [item[params.geom[gtype][1]], item[params.geom[gtype][0]]];
           }
 
           return geom;
@@ -112,16 +91,22 @@ function buildGeom(item, conf) {
   }
 }
 
-function buildProps(item, conf) {
+function buildProps(item, params) {
   var properties = {};
 
-  if (conf.attrs !== 'all') {
-    conf.attrs.forEach(function(attr) {
-      properties[attr] = item[attr];
-    });
-  } else { // include or exclude not specified. Include all fields except geometry fields
+  if (!params.exclude && !params.include) {
     for(var attr in item) {
       if(item.hasOwnProperty(attr) && (geomAttrs.indexOf(attr) === -1)) {
+          properties[attr] = item[attr];
+        }
+    }
+  } else if (params.include) {
+    params.include.forEach(function(attr){
+      properties[attr] = item[attr];
+    });
+  } else if (params.exclude) {
+    for(var attr in item) {
+      if(item.hasOwnProperty(attr) && (geomAttrs.indexOf(attr) === -1) && (params.exclude.indexOf(attr) === -1)) {
         properties[attr] = item[attr];
       }
     }
