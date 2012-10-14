@@ -1,4 +1,4 @@
-exports.version = '0.0.6';
+exports.version = '0.0.7';
 
 exports.defaults = {};
 
@@ -12,6 +12,7 @@ exports.parse = function(objects, params) {
     geojson.features.push(getFeature(item, settings));
   });
 
+  addOptionals(geojson, settings);
   return geojson;
 };
 
@@ -29,6 +30,20 @@ function applyDefaults(params, defaults) {
   }
 
   return settings;
+}
+
+function addOptionals(geojson, settings){
+  if(settings.crs) {
+    geojson.crs = {
+      type: "name",
+      properties: {
+        name: settings.crs
+      }
+    };
+  }
+  if (settings.bbox) {
+    geojson.bbox = settings.bbox;
+  }
 }
 
 function setGeom(params) {
