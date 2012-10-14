@@ -160,12 +160,12 @@ For each geometry type, specify which attribute contains the geometric data
 
 ## Parameters
 
-Depending on which makes more sense for your data, you either specify an array of attributes to include or exclude in `properties` for each feature. If neither `include` nor `exclude` is set, all the attributes (besides the attributes containing the geometry data) will be added to `properties`.
+Depending on which makes more sense for the data that is being parsed, either specify an array of attributes to include or exclude in `properties` for each feature. If neither `include` nor `exclude` is set, all the attributes (besides the attributes containing the geometry data) will be added to feature `properties`.
 
-- `include` - Array of attributes to included in `properties` objects. All other fields will be ignored.
-- `exclude` - Array of attributes to that shouldn't be included in `properties` object. All other fields will be added (besides geometry fields)
+- `include` - Array of attributes to include in `properties` for each feature. All other fields will be ignored.
+- `exclude` - Array of attributes that shouldn't be included in feature `properties`. All other attributes will be added (besides geometry attributes)
 
-The geometry parameters specify which attribute(s) contain(s) the geographic/geometric data. A geometry parameter must be specified for each type of geometry object that is present in your data. For example, if your data contains both points and polygons, you must specify both the `Point` and `Polygon` parameters. **Note that geometry parameters must be in proper case.** See the [GeoJSON spec](http://geojson.org/geojson-spec.html) for details on each geometry type. The structure of the geometry parameter is:
+The geometry parameters specify which attribute(s) contain(s) the geographic/geometric data. A geometry parameter must be specified for each type of geometry object that is present in the data that is being parsed. For example, if the data contains both points and polygons, specify both the `Point` and `Polygon` parameters. **Note that geometry parameters must be in proper case.** See the [GeoJSON spec](http://geojson.org/geojson-spec.html) for details on each geometry type. The structure of the geometry parameter is:
 
     ParameterName: 'attributeName'
 
