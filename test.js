@@ -37,8 +37,8 @@ describe('GeoJSON', function() {
 
     it('should not include geometry fields in feature properties', function(){
       output.features.forEach(function(feature){
-        assert.equal(feature.properties.lat, undefined, "Properties shoudn't have lat attribute");
-        assert.equal(feature.properties.lng, undefined, "Properties shoudn't have lng attribute");
+        assert.equal(feature.properties.lat, undefined, "Properties shouldn't have lat attribute");
+        assert.equal(feature.properties.lng, undefined, "Properties shouldn't have lng attribute");
       });
     });
 
@@ -141,6 +141,45 @@ describe('GeoJSON', function() {
           assert.equal(feature.properties.prop0, "value0", 'Property prop0 should match input value of value0');
           assert.equal(feature.properties.prop1['this'], 'that', 'Property prop1.this should match input value of that');
         }
+      });
+    });
+
+    it('should use the default settings when they have been specified', function(){
+      GeoJSON.defaults = {
+        Point: ['lat', 'lng'],
+        include: ['name']
+      };
+
+      var output = GeoJSON.parse(data);
+
+      output.features.forEach(function(feature){
+        assert.notEqual(feature.properties.name, undefined, "Properties should have name attribute");
+        assert.equal(feature.properties.lat, undefined, "Properties shouldn't have lat attribute");
+        assert.equal(feature.properties.lng, undefined, "Properties shouldn't have lng attribute");
+        assert.notEqual(feature.geometry.coordinates[0], undefined, "geometry.coordinates should have Y value");
+        assert.notEqual(feature.geometry.coordinates[1], undefined, "geometry.coordinates should have X value");
+      });
+
+      it('should only apply default settings that haven\'t been set in params', function(){
+        var output = GeoJSON.parse(data, {include: ['category', 'street']});
+
+        output.features.forEach(function(feature){
+          assert.equal(feature.properties.name, undefined, "Properties shouldn't have name attribute");
+          assert.notEqual(feature.properties.category, undefined, "Properties should have category attribute");
+          assert.notEqual(feature.properties.street, undefined, "Properties should have street attribute");
+        });
+      });
+
+      it('shouldn\'t be affected from prior calls to parse that set params', function(){
+        var output = GeoJSON.parse(data);
+
+        output.features.forEach(function(feature){
+          assert.notEqual(feature.properties.name, undefined, "Properties should have name attribute");
+          assert.equal(feature.properties.lat, undefined, "Properties shouldn't have lat attribute");
+          assert.equal(feature.properties.lng, undefined, "Properties shouldn't have lng attribute");
+          assert.notEqual(feature.geometry.coordinates[0], undefined, "geometry.coordinates should have Y value");
+          assert.notEqual(feature.geometry.coordinates[1], undefined, "geometry.coordinates should have X value");
+        });
       });
     });
 
