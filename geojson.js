@@ -1,13 +1,15 @@
-exports.version = '0.0.5';
+exports.version = '0.0.6';
 
 exports.defaults = {};
 
 exports.parse = function(objects, params) {
-  var geojson = {"type": "FeatureCollection", "features": []};
-  setGeom(params);
+  var geojson = {"type": "FeatureCollection", "features": []},
+      settings = applyDefaults(params, this.defaults);
+
+  setGeom(settings);
 
   objects.forEach(function(item){
-    geojson.features.push(getFeature(item, params));
+    geojson.features.push(getFeature(item, settings));
   });
 
   return geojson;
@@ -16,6 +18,18 @@ exports.parse = function(objects, params) {
 // Helper functions
 var geoms = ['Point', 'MultiPoint', 'LineString', 'MultiLineString', 'Polygon', 'MultiPolygon'],
     geomAttrs = [];
+
+function applyDefaults(params, defaults) {
+  var settings = params || {};
+
+  for(var setting in defaults) {
+    if(defaults.hasOwnProperty(setting) && !settings[setting]) {
+      settings[setting] = defaults[setting];
+    }
+  }
+
+  return settings;
+}
 
 function setGeom(params) {
   params.geom = {};
