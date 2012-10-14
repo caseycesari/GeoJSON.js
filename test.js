@@ -147,11 +147,13 @@ describe('GeoJSON', function() {
     it('should use the default settings when they have been specified', function(){
       GeoJSON.defaults = {
         Point: ['lat', 'lng'],
-        include: ['name']
+        include: ['name'],
+        crs: 'urn:ogc:def:crs:EPSG::4326'
       };
 
       var output = GeoJSON.parse(data);
 
+      assert.equal(output.crs.properties.name, 'urn:ogc:def:crs:EPSG::4326', "crs.properties.name matches input value for crs");
       output.features.forEach(function(feature){
         assert.notEqual(feature.properties.name, undefined, "Properties should have name attribute");
         assert.equal(feature.properties.lat, undefined, "Properties shouldn't have lat attribute");
@@ -163,6 +165,7 @@ describe('GeoJSON', function() {
       it('should only apply default settings that haven\'t been set in params', function(){
         var output = GeoJSON.parse(data, {include: ['category', 'street']});
 
+        assert.equal(output.crs.properties.name, 'urn:ogc:def:crs:EPSG::4326', "crs.properties.name matches input value for crs");
         output.features.forEach(function(feature){
           assert.equal(feature.properties.name, undefined, "Properties shouldn't have name attribute");
           assert.notEqual(feature.properties.category, undefined, "Properties should have category attribute");
@@ -173,6 +176,7 @@ describe('GeoJSON', function() {
       it('shouldn\'t be affected from prior calls to parse that set params', function(){
         var output = GeoJSON.parse(data);
 
+        assert.equal(output.crs.properties.name, 'urn:ogc:def:crs:EPSG::4326', "crs.properties.name matches input value for crs");
         output.features.forEach(function(feature){
           assert.notEqual(feature.properties.name, undefined, "Properties should have name attribute");
           assert.equal(feature.properties.lat, undefined, "Properties shouldn't have lat attribute");
@@ -181,6 +185,19 @@ describe('GeoJSON', function() {
           assert.notEqual(feature.geometry.coordinates[1], undefined, "geometry.coordinates should have X value");
         });
       });
+    });
+
+    it("it should add 'bbox' and/or 'crs' to the output if either is specified in the parameters", function(){
+      var output = GeoJSON.parse(data, {
+        Point: ['lat', 'lng'],
+        bbox: [100.0, 0.0, 105.0, 1.0],
+        crs: 'urn:ogc:def:crs:EPSG::4326'});
+
+      assert.equal(output.crs.properties.name, 'urn:ogc:def:crs:EPSG::4326', "crs.properties.name matches input value for crs");
+      assert.equal(output.bbox[0], 100.0, "bbox matches input value for bbox");
+      assert.equal(output.bbox[1], 0.0, "bbox matches input value for bbox");
+      assert.equal(output.bbox[2], 105.0, "bbox matches input value for bbox");
+      assert.equal(output.bbox[3], 1.0, "bbox matches input value for bbox");
     });
 
   });
