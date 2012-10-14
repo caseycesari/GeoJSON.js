@@ -27,7 +27,8 @@ describe('GeoJSON', function() {
       }
     ];
 
-    var output1 = GeoJSON.parse(data, {Point: ['lng', 'lat']});
+    var output1 = GeoJSON.parse(data, {Point: ['lat', 'lng']});
+    console.log(JSON.stringify(output1));
 
     it('should return output with 3 features', function(){
       assert.equal(output1.features.length, 3, 'Output should have 3 features');
@@ -43,14 +44,14 @@ describe('GeoJSON', function() {
       assert.notEqual(output1.features[0].properties.category, undefined, "Properties should have category field");
     });
 
-    var output2 = GeoJSON.parse(data, {Point: ['lng', 'lat'], include: ['name']});
+    var output2 = GeoJSON.parse(data, {Point: ['lat', 'lng'], include: ['name']});
 
     it('should only include attributes that are listed in the include parameter', function(){
       assert.equal(output2.features[0].properties.category, undefined, "Properites shouldn't have 'category' attribute");
       assert.equal(output2.features[1].properties.street, undefined, "Properites shouldn't have 'category' attribute");
     });
 
-    var output3 = GeoJSON.parse(data, {Point: ['lng', 'lat'], exclude: ['name']});
+    var output3 = GeoJSON.parse(data, {Point: ['lat', 'lng'], exclude: ['name']});
 
     it('should only include attributes that not are listed in the exclude parameter', function(){
       assert.equal(output3.features[0].properties.name, undefined, "Properites shouldn't have 'name' attribute");
@@ -58,7 +59,8 @@ describe('GeoJSON', function() {
 
     // Based off example spec at http://geojson.org/geojson-spec.html
     var data2 = [
-      { x: 0.5,
+      {
+        x: 0.5,
         y: 102.0,
         prop0: 'value0'
       },
@@ -77,6 +79,7 @@ describe('GeoJSON', function() {
     ];
 
     var output4 = GeoJSON.parse(data2, {'Point': ['x', 'y'], 'LineString': 'line', 'Polygon': 'polygon'});
+    console.log(JSON.stringify(output4));
 
     it('should be able to handle data with different geometry types', function(){
       assert.equal(output4.features.length, 3, 'Output should have 3 features');

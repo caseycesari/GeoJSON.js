@@ -42,7 +42,7 @@ Take the example data below:
 
 Convert it to GeoJSON:
     
-    GeoJSON.parse(data, {Point: ['lng', 'lat']});
+    GeoJSON.parse(data, {Point: ['lat', 'lng']});
 
       { "type": "FeatureCollection",
         "features": [
@@ -72,7 +72,7 @@ Convert it to GeoJSON:
   
 Convert the example data to GeoJSON, and only include the `name` attribute in `properties` for each feature.
     
-    GeoJSON.parse(data, {Point: ['lng', 'lat'], include: ['name']});
+    GeoJSON.parse(data, {Point: ['lat', 'lng'], include: ['name']});
 
       { "type": "FeatureCollection",
         "features": [
@@ -171,6 +171,6 @@ The geometry parameters specify which attribute(s) contain(s) the geographic/geo
 
 Except for Point, which uses an array, i.e:
 
-    'Point': ['lat', 'lng']
+    'Point': ['lat', 'lng'] // As of now, make sure to specify the X coordinate before the Y
 
 The valid geometry types are `Point`, `MultiPoint`, `LineString`, `MultiLineString`, `Polygon`, and `MultiPolygon`.
