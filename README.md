@@ -181,7 +181,7 @@ Except for `Point`, which can be specified with a field name or an array of fiel
 
     data = [{
       name: 'location',
-      coords: [y, x]
+      coords: [85, 34]
     }];
 
     GeoJSON.parse(data, {Point: 'coords'});
