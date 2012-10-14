@@ -1,4 +1,4 @@
-exports.version = '0.0.4';
+exports.version = '0.0.5';
 
 exports.defaults = {};
 
@@ -36,10 +36,10 @@ function baseObj() {
 
 function getGeomAttrList(params) {
   for(var param in params) {
-    if(params.hasOwnProperty(param)) {
-      if(geoms.indexOf(param) !== -1 && param !== 'Point') {
+    if(params.hasOwnProperty(param) && geoms.indexOf(param) !== -1) {
+      if(typeof params[param] === 'string') {
         geomAttrs.push(params[param]);
-      } else if (param === 'Point') {
+      } else if (typeof params[param] === 'object') { // Array of coordinates for Point
         geomAttrs.push(params[param][0]);
         geomAttrs.push(params[param][1]);
       }
@@ -94,20 +94,19 @@ function buildGeom(item, conf) {
 
   for(var attr in item) {
     if(item.hasOwnProperty(attr) && geomAttrs.indexOf(attr) !== -1) {
-      if(attr === conf.geom.Point[0]) {
-        geom.type = "Point";
-        geom.coordinates = [item[conf.geom.Point[1]], item[conf.geom.Point[0]]];
+      for(var gtype in conf.geom) {
+        if(conf.geom.hasOwnProperty(gtype) &&
+          (attr === conf.geom[gtype] || attr === conf.geom[gtype][0])) {
+          geom.type = gtype;
 
-        return geom;
-      } else {
-        for(var gtype in conf.geom) {
-          if(conf.geom.hasOwnProperty(gtype) && attr === conf.geom[gtype]) {
-            geom.type = gtype;
+          if (typeof conf.geom[gtype] === 'string') {
             geom.coordinates = item[conf.geom[gtype]];
+          } else { // Point with geom stored in two attributes
+            geom.coordinates = [item[conf.geom[gtype][1]], item[conf.geom[gtype][0]]];
           }
-        }
 
-        return geom;
+          return geom;
+        }
       }
     }
   }
