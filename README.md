@@ -92,7 +92,7 @@ Convert the example data to GeoJSON, and only include the `name` attribute in `p
         ]
       }
 
-The `parse` method can handle data with different geometry types
+The `parse` method can handle data with different geometry types. Consider the following sample data:
 
     var data2 = [
       { 
