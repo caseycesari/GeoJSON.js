@@ -6,7 +6,7 @@
   "main": "./geojson",
   "repository": {
     "type": "git",
-    "url": "http://github.com/caseypt/node-geojson.git"
+    "url": "http://github.com/caseypt/geojson.js.git"
   },
   "dependencies": {
   },
