@@ -167,10 +167,23 @@ Depending on which makes more sense for your data, you either specify an array o
 
 The geometry parameters specify which attribute(s) contain(s) the geographic/geometric data. A geometry parameter must be specified for each type of geometry object that is present in your data. For example, if your data contains both points and polygons, you must specify both the `Point` and `Polygon` parameters. **Note that geometry parameters must be in proper case.** See the [GeoJSON spec](http://geojson.org/geojson-spec.html) for details on each geometry type. The structure of the geometry parameter is:
 
-    'ParameterName': 'attributeName'
+    ParameterName: 'attributeName'
 
-Except for `Point`, which uses an array, i.e:
+Except for `Point`, which can be specified with a field name or an array of field names, i.e:
 
-    'Point': ['lat', 'lng'] // As of now, make sure to specify the X coordinate before the Y
+    data = [{
+      name: 'location',
+      x: 34,
+      y: 85
+    }];
+
+    GeoJSON.parse(data, {Point: ['lat', 'lng']});
+
+    data = [{
+      name: 'location',
+      coords: [y, x]
+    }];
+
+    GeoJSON.parse(data, {Point: 'coords'});
 
 The valid geometry types are `Point`, `MultiPoint`, `LineString`, `MultiLineString`, `Polygon`, and `MultiPolygon`.
