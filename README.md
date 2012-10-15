@@ -237,6 +237,8 @@ Except for `Point`, which can be specified with a field name or an array of fiel
 
     GeoJSON.parse(data, {Point: ['lat', 'lng']});
 
+or
+
     data = [{
       name: 'location',
       coords: [85, 34]
