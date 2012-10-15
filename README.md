@@ -6,7 +6,7 @@ Convert an array of objects with geometry to a [GeoJSON](http://geojson.org/) fe
 
 For node, use npm: `npm install geojson`
 
-In the browser, include `geojson.js`. For example: `<script type="text/javascript" src="js/geojson.js"></script>`
+In the browser, include `geojson.min.js`. For example: `<script type="text/javascript" src="js/geojson.min.js"></script>`
 
 ## Getting Started
 
