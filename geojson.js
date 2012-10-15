@@ -105,10 +105,11 @@
   }
 
   function buildProps(item, params) {
-    var properties = {};
+    var properties = {},
+        attr;
 
     if (!params.exclude && !params.include) {
-      for(var attr in item) {
+      for(attr in item) {
         if(item.hasOwnProperty(attr) && (geomAttrs.indexOf(attr) === -1)) {
             properties[attr] = item[attr];
           }
@@ -118,7 +119,7 @@
         properties[attr] = item[attr];
       });
     } else if (params.exclude) {
-      for(var attr in item) {
+      for(attr in item) {
         if(item.hasOwnProperty(attr) && (geomAttrs.indexOf(attr) === -1) && (params.exclude.indexOf(attr) === -1)) {
           properties[attr] = item[attr];
         }
