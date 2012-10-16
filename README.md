@@ -1,4 +1,4 @@
-# geojson.js
+# GeoJSON.js
 
 Convert an array of objects with geometry to a [GeoJSON](http://geojson.org/) feature collection.
 
