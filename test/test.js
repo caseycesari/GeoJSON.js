@@ -206,5 +206,31 @@ describe('GeoJSON', function() {
       expect(output.bbox[3]).to.be(40);
     });
 
+    it("should add extra attributes if extra param is set", function() {
+      var output = GeoJSON.parse(data, {Point: ['lat', 'lng'], extra: { 'foo':'bar', 'bar':'foo'}});
+
+      output.features.forEach(function(feature){
+        expect(feature.properties.foo).to.be('bar');
+        expect(feature.properties.bar).to.be('foo');
+      });
+
+      var output2 = GeoJSON.parse(data, {
+        Point: ['lat', 'lng'],
+        extra: {
+          style: {
+            "color": "#ff7800",
+            "weight": 5,
+            "opacity": 0.65
+          }
+        }
+      });
+
+      output2.features.forEach(function(feature) {
+        expect(feature.properties.style.color).to.be('#ff7800');
+        expect(feature.properties.style.weight).to.be(5);
+        expect(feature.properties.style.opacity).to.be(0.65);
+      });
+    });
+
   });
 });
