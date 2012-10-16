@@ -126,6 +126,18 @@
       }
     }
 
+    if(params.extra) { addExtra(properties, params.extra); }
+    
+    return properties;
+  }
+
+  function addExtra(properties, extra) {
+    for(var key in extra){
+      if(extra.hasOwnProperty(key)) {
+        properties[key] = extra[key];
+      }
+    }
+
     return properties;
   }
 
