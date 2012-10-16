@@ -48,7 +48,8 @@ Convert it to GeoJSON:
     
     GeoJSON.parse(data, {Point: ['lat', 'lng']});
 
-      { "type": "FeatureCollection",
+      { 
+        "type": "FeatureCollection",
         "features": [
           { "type": "Feature",
             "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
@@ -78,7 +79,8 @@ Convert the example data to GeoJSON, and only include the `name` attribute in `p
     
     GeoJSON.parse(data, {Point: ['lat', 'lng'], include: ['name']});
 
-      { "type": "FeatureCollection",
+      { 
+        "type": "FeatureCollection",
         "features": [
           { "type": "Feature",
             "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
@@ -273,7 +275,8 @@ You can add arbitrary properties to features using the `extra` param. The value 
     }
   });
 
-  { "type": "FeatureCollection",
+  { 
+    "type": "FeatureCollection",
     "features": [
       { "type": "Feature",
         "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
