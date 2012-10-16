@@ -191,6 +191,8 @@ describe('GeoJSON', function() {
           expect(feature.geometry.coordinates[1]).to.be.ok();
         });
       });
+
+      GeoJSON.defaults = {};
     });
 
     it("it should add 'bbox' and/or 'crs' to the output if either is specified in the parameters", function(){
@@ -230,6 +232,16 @@ describe('GeoJSON', function() {
         expect(feature.properties.style.weight).to.be(5);
         expect(feature.properties.style.opacity).to.be(0.65);
       });
+    });
+
+    it("should throw an error if the objects parameter is empty", function(){
+      var data = [];
+      
+      expect(function(){ GeoJSON.parse(data); }).to.throwException(/No data found/);
+    });
+
+    it("should throw an error if no geometry attributes have been specified", function() {
+          expect(function(){ GeoJSON.parse(data); }).to.throwException(/No geometry attributes specified/);
     });
 
   });
