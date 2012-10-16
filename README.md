@@ -38,7 +38,7 @@ Take the example data below:
       {
         name: 'Location C',
         category: 'Office',
-        street: 'South'
+        street: 'South',
         lat: 39.123,
         lng: -74.534
       }
@@ -259,6 +259,36 @@ geojson.js also supports the optional GeoJSON properties `bbox` and `crs`.
 
 - `crs` - A string identifying a coordinate reference system. Only named CRSs are supported at the moment. [More information](http://geojson.org/geojson-spec.html#named-crs)
 - `bbox` - A bounding box for the feature collection. An array with the following format: `[y1, x1, y2, x2]`. [More information](http://geojson.org/geojson-spec.html#bounding-boxes)
+
+You can add arbitrary properties to features using the `extra` param. The value for `extra` must be an object.For example, using the original sample data:
+
+  GeoJSON.parse(data, {
+    Point: ['lat', 'lng'],
+    extra: {
+      style: {
+        "color": "#ff7800",
+        "weight": 5,
+        "opacity": 0.65
+      }
+    }
+  });
+
+  { "type": "FeatureCollection",
+    "features": [
+      { "type": "Feature",
+        "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
+        "properties": { 
+          "name": "Location A",
+          "category": "Store",
+          "style": {
+            "color": "#ff7800",
+            "weight": 5,
+            "opacity": 0.65
+          }
+        }
+      },
+    ...
+  }    
 
 ## Tests
 
