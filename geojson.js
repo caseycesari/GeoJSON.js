@@ -4,9 +4,12 @@
   GeoJSON.defaults = {};
 
   GeoJSON.parse = function(objects, params) {
+    if(objects.length === 0) { throw new Error('No data found'); }
+
     var geojson = {"type": "FeatureCollection", "features": []},
         settings = applyDefaults(params, this.defaults);
 
+    geomAttrs.length = 0;
     setGeom(settings);
 
     objects.forEach(function(item){
@@ -71,6 +74,8 @@
         }
       }
     }
+
+    if(geomAttrs.length === 0) { throw new Error('No geometry attributes specified'); }
   }
 
   function getFeature(item, params) {
@@ -91,7 +96,7 @@
           if(params.geom.hasOwnProperty(gtype) && (attr === params.geom[gtype] || attr === params.geom[gtype][0])) {
             geom.type = gtype;
 
-            if (typeof params.geom[gtype] === 'string') {
+            if(typeof params.geom[gtype] === 'string') {
               geom.coordinates = item[params.geom[gtype]];
             } else { // Point with geom stored in two attributes
               geom.coordinates = [item[params.geom[gtype][1]], item[params.geom[gtype][0]]];
@@ -108,17 +113,17 @@
     var properties = {},
         attr;
 
-    if (!params.exclude && !params.include) {
+    if(!params.exclude && !params.include) {
       for(attr in item) {
         if(item.hasOwnProperty(attr) && (geomAttrs.indexOf(attr) === -1)) {
             properties[attr] = item[attr];
           }
       }
-    } else if (params.include) {
+    } else if(params.include) {
       params.include.forEach(function(attr){
         properties[attr] = item[attr];
       });
-    } else if (params.exclude) {
+    } else if(params.exclude) {
       for(attr in item) {
         if(item.hasOwnProperty(attr) && (geomAttrs.indexOf(attr) === -1) && (params.exclude.indexOf(attr) === -1)) {
           properties[attr] = item[attr];
@@ -127,7 +132,7 @@
     }
 
     if(params.extra) { addExtra(properties, params.extra); }
-    
+
     return properties;
   }
 
