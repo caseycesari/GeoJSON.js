@@ -220,10 +220,14 @@ You can also specify default settings if you will be parsing mutliple datasets w
 
 ## Parameters
 
+#### include/exclude
+
 Depending on which makes more sense for the data that is being parsed, either specify an array of attributes to include or exclude in `properties` for each feature. If neither `include` nor `exclude` is set, all the attributes (besides the attributes containing the geometry data) will be added to feature `properties`.
 
 - `include` - Array of attributes to include in `properties` for each feature. All other fields will be ignored.
 - `exclude` - Array of attributes that shouldn't be included in feature `properties`. All other attributes will be added (besides geometry attributes)
+
+#### Geometry
 
 The geometry parameters specify which attribute(s) contain(s) the geographic/geometric data. A geometry parameter must be specified for each type of geometry object that is present in the data that is being parsed. For example, if the data contains both points and polygons, specify both the `Point` and `Polygon` parameters. **Note that geometry parameters must be in proper case.** See the [GeoJSON spec](http://geojson.org/geojson-spec.html) for details on each geometry type. The structure of the geometry parameter is:
 
@@ -257,41 +261,45 @@ The valid geometry types are
 - `Polygon`
 - `MultiPolygon`
 
+#### bbox, crs
+
 geojson.js also supports the optional GeoJSON properties `bbox` and `crs`.
 
 - `crs` - A string identifying a coordinate reference system. Only named CRSs are supported at the moment. [More information](http://geojson.org/geojson-spec.html#named-crs)
 - `bbox` - A bounding box for the feature collection. An array with the following format: `[y1, x1, y2, x2]`. [More information](http://geojson.org/geojson-spec.html#bounding-boxes)
 
+#### extra
+
 You can add arbitrary properties to features using the `extra` param. The value for `extra` must be an object.For example, using the original sample data:
 
-  GeoJSON.parse(data, {
-    Point: ['lat', 'lng'],
-    extra: {
-      style: {
-        "color": "#ff7800",
-        "weight": 5,
-        "opacity": 0.65
-      }
-    }
-  });
-
-  { 
-    "type": "FeatureCollection",
-    "features": [
-      { "type": "Feature",
-        "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
-        "properties": { 
-          "name": "Location A",
-          "category": "Store",
-          "style": {
-            "color": "#ff7800",
-            "weight": 5,
-            "opacity": 0.65
-          }
+    GeoJSON.parse(data, {
+      Point: ['lat', 'lng'],
+      extra: {
+        style: {
+          "color": "#ff7800",
+          "weight": 5,
+          "opacity": 0.65
         }
-      },
-    ...
-  }    
+      }
+    });
+
+    { 
+      "type": "FeatureCollection",
+      "features": [
+        { "type": "Feature",
+          "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
+          "properties": { 
+            "name": "Location A",
+            "category": "Store",
+            "style": {
+              "color": "#ff7800",
+              "weight": 5,
+              "opacity": 0.65
+            }
+          }
+        },
+      ...
+    }    
 
 ## Tests
 
