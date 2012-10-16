@@ -1,15 +1,18 @@
 (function(GeoJSON) {
-  GeoJSON.version = '0.0.8';
+  GeoJSON.version = '0.1.0';
 
+  // Allow user to specify default parameters
   GeoJSON.defaults = {};
 
+  // The one and only public function.
+  // Converts an array of objects into a GeoJSON feature collection
   GeoJSON.parse = function(objects, params) {
     if(objects.length === 0) { throw new Error('No data found'); }
 
     var geojson = {"type": "FeatureCollection", "features": []},
         settings = applyDefaults(params, this.defaults);
 
-    geomAttrs.length = 0;
+    geomAttrs.length = 0; // Reset the list of geometry fields
     setGeom(settings);
 
     objects.forEach(function(item){
@@ -24,6 +27,9 @@
   var geoms = ['Point', 'MultiPoint', 'LineString', 'MultiLineString', 'Polygon', 'MultiPolygon'],
       geomAttrs = [];
 
+  // Adds default settings to user-specified params
+  // Does not overwrite any settings--only adds defaults
+  // the the user did not specify
   function applyDefaults(params, defaults) {
     var settings = params || {};
 
@@ -36,6 +42,8 @@
     return settings;
   }
 
+  // Adds the optional GeoJSON properties crs and bbox
+  // if they have been specified
   function addOptionals(geojson, settings){
     if(settings.crs) {
       geojson.crs = {
@@ -50,6 +58,8 @@
     }
   }
 
+  // Moves the user-specified geometry parameters
+  // under the `geom` key in param for easier access
   function setGeom(params) {
     params.geom = {};
 
@@ -63,6 +73,10 @@
     setGeomAttrList(params.geom);
   }
 
+  // Adds fields which contain geometry data
+  // to geomAttrs. This list is used when adding
+  // properties to the features so that no geometry
+  // fields are added the properties key
   function setGeomAttrList(params) {
     for(var param in params) {
       if(params.hasOwnProperty(param)) {
@@ -78,6 +92,8 @@
     if(geomAttrs.length === 0) { throw new Error('No geometry attributes specified'); }
   }
 
+  // Creates a feature object to be added
+  // to the GeoJSON features array
   function getFeature(item, params) {
     var feature = { "type": "Feature" };
 
@@ -87,6 +103,8 @@
     return feature;
   }
 
+  // Assembles the `geometry` property
+  // for the feature output
   function buildGeom(item, params) {
     var geom = {};
 
@@ -109,6 +127,8 @@
     }
   }
 
+  // Assemblies the `properties` property
+  // for the feature ouput
   function buildProps(item, params) {
     var properties = {},
         attr;
@@ -136,6 +156,8 @@
     return properties;
   }
 
+  // Adds data contained in the `extra`
+  // parameter if it has been specified
   function addExtra(properties, extra) {
     for(var key in extra){
       if(extra.hasOwnProperty(key)) {
