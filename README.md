@@ -21,27 +21,9 @@ The library has one method, `parse`, which takes an array of objects with geomet
 Take the example data below:
     
     var data = [
-      {
-        name: 'Location A',
-        category: 'Store',
-        street: 'Market',
-        lat: 39.984,
-        lng: -75.343
-      },
-      {
-        name: 'Location B',
-        category: 'House',
-        street: 'Broad',
-        lat: 39.284,
-        lng: -75.833
-      },
-      {
-        name: 'Location C',
-        category: 'Office',
-        street: 'South',
-        lat: 39.123,
-        lng: -74.534
-      }
+      { name: 'Location A', category: 'Store', street: 'Market', lat: 39.984, lng: -75.343 },
+      { name: 'Location B', category: 'House', street: 'Broad', lat: 39.284, lng: -75.833 },
+      { name: 'Location C', category: 'Office', street: 'South', lat: 39.123, lng: -74.534 }
     ];
 
 Convert it to GeoJSON:
@@ -166,19 +148,9 @@ For each geometry type, specify which attribute contains the geometric data
 
 You can also specify default settings if you will be parsing mutliple datasets with similiar attributes.
 
-    var data1 = [{
-      name: 'Location A',
-      street: 'Market',
-      x: 34,
-      y: -75
-    }];
+    var data1 = [{ name: 'Location A', street: 'Market', x: 34, y: -75 }];
 
-    var data2 = [{
-      name: 'Location B',
-      date: '11/23/2012',
-      x: 54,
-      y: -98
-    }];
+    var data2 = [{ name: 'Location B', date: '11/23/2012', x: 54, y: -98 }];
 
     GeoJSON.defaults = {Point: ['x', 'y'], include: ['name']};
 
@@ -235,20 +207,13 @@ The geometry parameters specify which attribute(s) contain(s) the geographic/geo
 
 Except for `Point`, which can be specified with a field name or an array of field names, i.e:
 
-    data = [{
-      name: 'location',
-      x: 34,
-      y: 85
-    }];
+    data = [{ name: 'location', x: 34, y: 85 }];
 
     GeoJSON.parse(data, {Point: ['lat', 'lng']});
 
 or
 
-    data = [{
-      name: 'location',
-      coords: [85, 34]
-    }];
+    data = [{ name: 'location', coords: [85, 34] }];
 
     GeoJSON.parse(data, {Point: 'coords'});
 
