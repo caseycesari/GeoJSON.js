@@ -4,7 +4,7 @@ Convert an array of objects with geometry to a [GeoJSON](http://geojson.org/) fe
 
 ## Installation
 
-For node, use npm: `npm install geojson`
+For node, use npm: `$ npm install geojson`
 
 In the browser, include `geojson.min.js`. For example: `<script type="text/javascript" src="js/geojson.min.js"></script>`
 
@@ -303,6 +303,12 @@ You can add arbitrary properties to features using the `extra` param. The value 
 
 ## Tests
 
-For node, `npm test`.
+For node, `$ npm test`.
 
 For the browser, visit `test/test.html`.
+
+## Building
+
+`$ grunt ` will run test.js, and lint and minify `geojson.js`.
+
+`$ grunt all` will do all the above, plus run the browser tests, `test.html`. Note that this requires [PhantomJS](http://phantomjs.org/).
