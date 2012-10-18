@@ -108,29 +108,27 @@
   // Assembles the `geometry` property
   // for the feature output
   function buildGeom(item, params) {
-    var geom = {};
+    var geom = {},
+        attr;
 
-    for(var attr in item) {
-      if(item.hasOwnProperty(attr) && geomAttrs.indexOf(attr) !== -1) {
-        for(var gtype in params.geom) {
-          if(params.geom.hasOwnProperty(gtype) && (attr === params.geom[gtype] || attr === params.geom[gtype][0])) {
-            geom.type = gtype;
+    for(var gtype in params.geom) {
+      attr = (typeof params.geom[gtype] === 'object') ? params.geom[gtype][0] : params.geom[gtype];
+      if(params.geom.hasOwnProperty(gtype) && item[attr]) {
+        geom.type = gtype;
 
-            if(typeof params.geom[gtype] === 'string') {
-              geom.coordinates = item[params.geom[gtype]];
-            } else { // Point with geom stored in two attributes
-              geom.coordinates = [item[params.geom[gtype][1]], item[params.geom[gtype][0]]];
-            }
-
-            return geom;
-          }
+        if(typeof params.geom[gtype] === 'string') {
+          geom.coordinates = item[params.geom[gtype]];
+        } else {
+          geom.coordinates = [item[params.geom[gtype][1]], item[params.geom[gtype][0]]];
         }
       }
     }
+
+    return geom;
   }
 
-  // Assembles the `properties` property
-  // for the feature ouput
+  // Returns the function to be used to
+  // build the properties object for each feature
   function getPropFunction(params) {
     var func;
 
