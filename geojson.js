@@ -10,13 +10,15 @@
     if(objects.length === 0) { throw new Error('No data found'); }
 
     var geojson = {"type": "FeatureCollection", "features": []},
-        settings = applyDefaults(params, this.defaults);
+        settings = applyDefaults(params, this.defaults),
+        propFunc;
 
     geomAttrs.length = 0; // Reset the list of geometry fields
     setGeom(settings);
 
+    propFunc = getPropFunction(settings);
     objects.forEach(function(item){
-      geojson.features.push(getFeature(item, settings));
+      geojson.features.push(getFeature(item, settings, propFunc));
     });
 
     addOptionals(geojson, settings);
@@ -94,11 +96,11 @@
 
   // Creates a feature object to be added
   // to the GeoJSON features array
-  function getFeature(item, params) {
+  function getFeature(item, params, propFunc) {
     var feature = { "type": "Feature" };
 
     feature.geometry = buildGeom(item, params);
-    feature.properties = buildProps(item, params);
+    feature.properties = propFunc.call(item);
 
     return feature;
   }
@@ -127,33 +129,43 @@
     }
   }
 
-  // Assemblies the `properties` property
+  // Assembles the `properties` property
   // for the feature ouput
-  function buildProps(item, params) {
-    var properties = {},
-        attr;
+  function getPropFunction(params) {
+    var func;
 
     if(!params.exclude && !params.include) {
-      for(attr in item) {
-        if(item.hasOwnProperty(attr) && (geomAttrs.indexOf(attr) === -1)) {
-            properties[attr] = item[attr];
+      func = function(properties) {
+        for(var attr in this) {
+          if(this.hasOwnProperty(attr) && (geomAttrs.indexOf(attr) === -1)) {
+            properties[attr] = this[attr];
           }
-      }
-    } else if(params.include) {
-      params.include.forEach(function(attr){
-        properties[attr] = item[attr];
-      });
-    } else if(params.exclude) {
-      for(attr in item) {
-        if(item.hasOwnProperty(attr) && (geomAttrs.indexOf(attr) === -1) && (params.exclude.indexOf(attr) === -1)) {
-          properties[attr] = item[attr];
         }
-      }
+      };
+    } else if(params.include) {
+      func = function(properties) {
+        params.include.forEach(function(attr){
+          properties[attr] = this[attr];
+        }, this);
+      };
+    } else if(params.exclude) {
+      func = function(properties) {
+        for(var attr in this) {
+          if(this.hasOwnProperty(attr) && (geomAttrs.indexOf(attr) === -1) && (params.exclude.indexOf(attr) === -1)) {
+            properties[attr] = this[attr];
+          }
+        }
+      };
     }
 
-    if(params.extra) { addExtra(properties, params.extra); }
+    return function() {
+      var properties = {};
 
-    return properties;
+      func.call(this, properties);
+
+      if(params.extra) { addExtra(properties, params.extra); }
+      return properties;
+    };
   }
 
   // Adds data contained in the `extra`
