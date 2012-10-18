@@ -235,7 +235,7 @@ geojson.js also supports the optional GeoJSON properties `bbox` and `crs`.
 
 #### extra
 
-You can add arbitrary properties to features using the `extra` param. The value for `extra` must be an object.For example, using the original sample data:
+You can add arbitrary properties to features using the `extra` param. The value for `extra` must be an object. For example, using the original sample data:
 
     GeoJSON.parse(data, {
       Point: ['lat', 'lng'],
@@ -274,6 +274,6 @@ For the browser, visit `test/test.html`.
 
 ## Building
 
-`$ grunt ` will run test.js, and lint and minify `geojson.js`.
+`$ grunt ` will run test.js, then lint and minify `geojson.js`.
 
 `$ grunt all` will do all the above, plus run the browser tests, `test.html`. Note that this requires [PhantomJS](http://phantomjs.org/).
