@@ -46,6 +46,8 @@ describe('GeoJSON', function() {
       output.features.forEach(function(feature){
         expect(feature.properties.lat).to.not.be.ok();
         expect(feature.properties.lng).to.not.be.ok();
+        expect(feature.geometry.coordinates[0]).to.be.ok();
+        expect(feature.geometry.coordinates[1]).to.be.ok();
       });
     });
 
