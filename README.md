@@ -16,7 +16,7 @@ In the browser, the library is available at `GeoJSON`.
 
 ## Example Usage
 
-The library has one method, `parse`, which takes an array of objects with geometry data as the first parameter, and an object consisting of settings for the second parameter.
+The library has one method, `parse`, which takes an array of objects with geometry data as the first parameter, an object consisting of settings for the second parameter, and an optional callback function as the third parameter. If a callback is not specified, the `parse` function returns the GeoJSON output.
 
 Take the example data below:
     
@@ -28,7 +28,9 @@ Take the example data below:
 
 Convert it to GeoJSON:
     
-    GeoJSON.parse(data, {Point: ['lat', 'lng']});
+    GeoJSON.parse(data, {Point: ['lat', 'lng']}, function(geojson){
+      console.log(geojson);
+    });
 
       { 
         "type": "FeatureCollection",
@@ -59,7 +61,9 @@ Convert it to GeoJSON:
   
 Convert the example data to GeoJSON, and only include the `name` attribute in `properties` for each feature.
     
-    GeoJSON.parse(data, {Point: ['lat', 'lng'], include: ['name']});
+    GeoJSON.parse(data, {Point: ['lat', 'lng'], include: ['name']}, function(geojson){
+      console.log(geojson);
+    });
 
       { 
         "type": "FeatureCollection",
@@ -104,7 +108,9 @@ The `parse` method can handle data with different geometry types. Consider the f
 
 For each geometry type, specify which attribute contains the geometric data
 
-    GeoJSON.parse(data2, {'Point': ['x', 'y'], 'LineString': 'line', 'Polygon': 'polygon'});
+    GeoJSON.parse(data2, {'Point': ['x', 'y'], 'LineString': 'line', 'Polygon': 'polygon'}, function(geojson){
+      console.log(geojson);
+    });
 
     {
       "type": "FeatureCollection",
@@ -154,7 +160,9 @@ You can also specify default settings if you will be parsing mutliple datasets w
 
     GeoJSON.defaults = {Point: ['x', 'y'], include: ['name']};
 
-    GeoJSON.parse(data1);
+    GeoJSON.parse(data1, {}, function(geojson){
+      console.log(geojson);
+    });
 
     {
       "type": "FeatureCollection",
@@ -172,7 +180,9 @@ You can also specify default settings if you will be parsing mutliple datasets w
       ]
     }
 
-    GeoJSON.parse(data2);
+    GeoJSON.parse(data2, {}, function(geojson){
+      console.log(geojson.js)
+    });
 
     {
       "type": "FeatureCollection",
@@ -189,6 +199,12 @@ You can also specify default settings if you will be parsing mutliple datasets w
         }
       ]
     }
+
+If you specify a callback function, the GeoJSON output is set as the first parameter of the function
+
+    GeoJSON.parse(data, {Point: ['lat', 'lng']}, function(geojson){
+      console.log(geojson);
+    });
 
 ## Parameters
 
@@ -246,6 +262,9 @@ You can add arbitrary properties to features using the `extra` param. The value 
           "opacity": 0.65
         }
       }
+    },
+      function(geojson){
+        console.log(geojson);
     });
 
     { 
