@@ -156,7 +156,7 @@ describe('GeoJSON', function() {
         crs: 'urn:ogc:def:crs:EPSG::4326'
       };
 
-      var output = GeoJSON.parse(data);
+      var output = GeoJSON.parse(data, {});
 
       expect(output.crs.properties.name).to.be('urn:ogc:def:crs:EPSG::4326');
 
@@ -181,7 +181,7 @@ describe('GeoJSON', function() {
       });
 
       it('keeps the default settings until they have been explicity reset', function(){
-        var output = GeoJSON.parse(data);
+        var output = GeoJSON.parse(data, {});
 
         expect(output.crs.properties.name).to.be('urn:ogc:def:crs:EPSG::4326');
         
@@ -244,6 +244,32 @@ describe('GeoJSON', function() {
 
     it("throws an error if no geometry attributes have been specified", function() {
       expect(function(){ GeoJSON.parse(data); }).to.throwException(/No geometry attributes specified/);
+    });
+
+    it("calls the calback function if one is provided", function(done){
+      GeoJSON.parse(data, {Point: ['lat', 'lng']}, function(geojson){
+        expect(geojson.features.length).to.be(3);
+
+        geojson.features.forEach(function(feature){
+          expect(feature.properties.lat).to.not.be.ok();
+          expect(feature.properties.lng).to.not.be.ok();
+          expect(feature.geometry.coordinates[0]).to.be.ok();
+          expect(feature.geometry.coordinates[1]).to.be.ok();
+        });
+
+        done();
+      });
+    });
+
+    it("returns the GeoJSON output if the callback parameter is not a function", function(){
+      var output = GeoJSON.parse(data, {Point: ['lat', 'lng']}, 'foo');
+
+      output.features.forEach(function(feature){
+        expect(feature.properties.lat).to.not.be.ok();
+        expect(feature.properties.lng).to.not.be.ok();
+        expect(feature.geometry.coordinates[0]).to.be.ok();
+        expect(feature.geometry.coordinates[1]).to.be.ok();
+      });
     });
 
   });
