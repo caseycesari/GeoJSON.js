@@ -1,12 +1,12 @@
 (function(GeoJSON) {
-  GeoJSON.version = '0.1.2';
+  GeoJSON.version = '0.1.3';
 
   // Allow user to specify default parameters
   GeoJSON.defaults = {};
 
   // The one and only public function.
   // Converts an array of objects into a GeoJSON feature collection
-  GeoJSON.parse = function(objects, params) {
+  GeoJSON.parse = function(objects, params, callback) {
     if(objects.length === 0) { throw new Error('No data found'); }
 
     var geojson = {"type": "FeatureCollection", "features": []},
@@ -15,14 +15,19 @@
 
     geomAttrs.length = 0; // Reset the list of geometry fields
     setGeom(settings);
-
     propFunc = getPropFunction(settings);
+    
     objects.forEach(function(item){
       geojson.features.push(getFeature(item, settings, propFunc));
     });
 
     addOptionals(geojson, settings);
-    return geojson;
+
+    if (callback && typeof callback === 'function') {
+      callback(geojson);
+    } else {
+      return geojson;
+    }
   };
 
   // Helper functions
