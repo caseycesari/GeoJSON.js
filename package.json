@@ -8,14 +8,16 @@
     "type": "git",
     "url": "http://github.com/caseypt/geojson.js.git"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "mocha": "*",
     "expect.js": "*",
-    "grunt": ">=0.3.16",
-    "grunt-simple-mocha": ">=0.2.0",
-    "grunt-mocha": "0.1.7"
+    "grunt": "~0.4.1",
+    "grunt-simple-mocha": "~0.4.0",
+    "grunt-mocha": "~0.3.4",
+    "grunt-contrib-jshint": "~0.6.0",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-lib-phantomjs": "~0.3.1"
   },
   "engines": {
     "node": "0.8.x"
