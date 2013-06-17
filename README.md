@@ -296,3 +296,7 @@ For the browser, visit `test/test.html`.
 `$ grunt ` will run test.js, then lint and minify `geojson.js`.
 
 `$ grunt all` will do all the above, plus run the browser tests, `test.html`. Note that this requires [PhantomJS](http://phantomjs.org/).
+
+## License
+
+Licensed under the MIT License. See `LICENSE` for details.
