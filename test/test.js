@@ -93,7 +93,7 @@ describe('GeoJSON', function() {
       var oneAttr = [{ name: 'test location', coords: [-74, 39], foo: 'bar'}];
 
       var geoOneAttr = GeoJSON.parse(oneAttr, {Point: 'coords'});
-      
+
       expect(geoOneAttr.features[0].geometry.coordinates[0]).to.be(-74);
       expect(geoOneAttr.features[0].geometry.coordinates[1]).to.be(39.0);
     });
@@ -117,12 +117,40 @@ describe('GeoJSON', function() {
           ],
           prop0: 'value0',
           prop1: {"this": "that"}
+        },
+        {
+          multipoint: [
+            [100.0, 0.0], [101.0, 1.0]
+          ],
+          prop0: 'value0'
+        },
+        {
+          multipolygon: [
+            [[[102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0]]],
+            [[[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]],
+             [[100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2]]]
+          ],
+          prop1: {'this': 'that'}
+        },
+        {
+          multilinestring: [
+            [ [100.0, 0.0], [101.0, 1.0] ],
+            [ [102.0, 2.0], [103.0, 3.0] ]
+          ],
+          prop0: 'value1'
         }
       ];
 
-      var output = GeoJSON.parse(data2, {'Point': ['x', 'y'], 'LineString': 'line', 'Polygon': 'polygon'});
+      var output = GeoJSON.parse(data2, {
+        'Point': ['x', 'y'],
+        'LineString': 'line',
+        'Polygon': 'polygon',
+        'MultiPoint': 'multipoint',
+        'MultiPolygon': 'multipolygon',
+        'MultiLineString': 'multilinestring'
+      });
 
-      expect(output.features.length).to.be(3);
+      expect(output.features.length).to.be(6);
 
       output.features.forEach(function(feature){
         if(feature.geometry.type === 'Point') {
@@ -172,7 +200,7 @@ describe('GeoJSON', function() {
         var output = GeoJSON.parse(data, {include: ['category', 'street']});
 
         expect(output.crs.properties.name).to.be('urn:ogc:def:crs:EPSG::4326');
-        
+
         output.features.forEach(function(feature){
           expect(feature.properties.name).to.not.be.ok();
           expect(feature.properties.category).to.be.ok();
@@ -184,7 +212,7 @@ describe('GeoJSON', function() {
         var output = GeoJSON.parse(data, {});
 
         expect(output.crs.properties.name).to.be('urn:ogc:def:crs:EPSG::4326');
-        
+
         output.features.forEach(function(feature){
           expect(feature.properties.name).to.be.ok();
           expect(feature.properties.lat).to.not.be.ok();
@@ -238,7 +266,7 @@ describe('GeoJSON', function() {
 
     it("throws an error if the objects parameter is empty", function(){
       var data = [];
-      
+
       expect(function(){ GeoJSON.parse(data); }).to.throwException(/No data found/);
     });
 
