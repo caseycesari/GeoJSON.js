@@ -285,6 +285,45 @@ You can add arbitrary properties to features using the `extra` param. The value 
       ...
     }    
 
+#### extraGlobal
+
+You can also add dataset properties using the `extraGlobal` param. The value for `extraGlobal` must be an object. For example, see below:
+
+    GeoJSON.parse(data, {
+      Point: ['lat', 'lng'], 
+      extraGlobal: {
+        'Creator': 'Mr. Example', 
+        'records': data.length, 
+        'summary': 'A few example points'
+      }
+    }, function(geojson){
+      console.log(geojson);
+    });
+
+      { 
+        "type": "FeatureCollection",
+        "features": [
+          { "type": "Feature",
+            "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
+            "properties": { 
+              "name": "Location A"
+            }
+          },
+          ...
+          { "type": "Feature",
+            "geometry": {"type": "Point", "coordinates": [ -75.534, 39.123]},
+            "properties": { 
+              "name": "Location C"
+            }
+          }
+        ],
+        "properties": {
+          "Creator": "Mr. Example",
+          "records": 2,
+          "summary": "A few example points"
+        }
+      }
+
 ## Tests
 
 For node, `$ npm test`.
