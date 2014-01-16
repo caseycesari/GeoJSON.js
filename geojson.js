@@ -1,5 +1,5 @@
 (function(GeoJSON) {
-  GeoJSON.version = '0.1.3';
+  GeoJSON.version = '0.1.4';
 
   // Allow user to specify default parameters
   GeoJSON.defaults = {};
@@ -62,6 +62,11 @@
     }
     if (settings.bbox) {
       geojson.bbox = settings.bbox;
+    }
+    if (settings.attrs) {
+      for (var key in settings.attrs) {
+        geojson[key] = settings.attrs[key];
+      }
     }
   }
 
