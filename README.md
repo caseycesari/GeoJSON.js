@@ -29,7 +29,7 @@ Take the example data below:
 Convert it to GeoJSON:
     
     GeoJSON.parse(data, {Point: ['lat', 'lng']}, function(geojson){
-      console.log(geojson);
+      console.log(JSON.stringify(geojson));
     });
 
       { 
@@ -62,7 +62,7 @@ Convert it to GeoJSON:
 Convert the example data to GeoJSON, and only include the `name` attribute in `properties` for each feature.
     
     GeoJSON.parse(data, {Point: ['lat', 'lng'], include: ['name']}, function(geojson){
-      console.log(geojson);
+      console.log(JSON.stringify(geojson));
     });
 
       { 
@@ -109,7 +109,7 @@ The `parse` method can handle data with different geometry types. Consider the f
 For each geometry type, specify which attribute contains the geometric data
 
     GeoJSON.parse(data2, {'Point': ['x', 'y'], 'LineString': 'line', 'Polygon': 'polygon'}, function(geojson){
-      console.log(geojson);
+      console.log(JSON.stringify(geojson));
     });
 
     {
@@ -161,7 +161,7 @@ You can also specify default settings if you will be parsing mutliple datasets w
     GeoJSON.defaults = {Point: ['x', 'y'], include: ['name']};
 
     GeoJSON.parse(data1, {}, function(geojson){
-      console.log(geojson);
+      console.log(JSON.stringify(geojson));
     });
 
     {
@@ -203,7 +203,7 @@ You can also specify default settings if you will be parsing mutliple datasets w
 If you specify a callback function, the GeoJSON output is set as the first parameter of the function
 
     GeoJSON.parse(data, {Point: ['lat', 'lng']}, function(geojson){
-      console.log(geojson);
+      console.log(JSON.stringify(geojson));
     });
 
 ## Parameters
@@ -264,7 +264,7 @@ You can add arbitrary properties to features using the `extra` param. The value 
       }
     },
       function(geojson){
-        console.log(geojson);
+        console.log(JSON.stringify(geojson));
     });
 
     { 
