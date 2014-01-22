@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
   grunt.initConfig({
-    pkg: '<json:package.json>',
+    pkg: grunt.file.readJSON('package.json'),
     simplemocha: {
       all:  {
         src: ['test/*.js']
@@ -18,10 +18,12 @@ module.exports = function(grunt) {
     uglify: {
       options: {
         banner: '// <%= pkg.name %>.js - v<%= pkg.version %>\n' +
-                '// (c) 2013 Casey Thomas, MIT License'
+                '// (c) 2014 Casey Thomas, MIT License \n'
       },
       dist: {
-        'geojson.min.js': ['<banner>', 'geojson.js']
+        files: {
+          'geojson.min.js': ['<banner>', 'geojson.js']
+        }
       }
     }
   });
