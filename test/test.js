@@ -264,6 +264,19 @@ describe('GeoJSON', function() {
       });
     });
 
+    it("adds a properties key at the top level if the extraGlobal parameter is set", function() {
+      var output = GeoJSON.parse(data, {
+        Point: ['lat', 'lng'],
+        extra: { 'foo':'bar', 'bar':'foo'},
+        extraGlobal: { 'name': 'A bunch of points', 'source': 'Government website'}
+      });
+
+      expect(output.properties).to.be.ok();
+      expect(output.properties.name).to.be('A bunch of points');
+      expect(output.properties.source).to.be('Government website');
+
+    });
+
     it("throws an error if the objects parameter is empty", function(){
       var data = [];
 
