@@ -7,7 +7,6 @@
   // The one and only public function.
   // Converts an array of objects into a GeoJSON feature collection
   GeoJSON.parse = function(objects, params, callback) {
-    if(objects.length === 0) { throw new Error('No data found'); }
 
     var geojson = {"type": "FeatureCollection", "features": []},
         settings = applyDefaults(params, this.defaults),

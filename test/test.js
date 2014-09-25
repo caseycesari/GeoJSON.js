@@ -277,10 +277,13 @@ describe('GeoJSON', function() {
 
     });
 
-    it("throws an error if the objects parameter is empty", function(){
-      var data = [];
-
-      expect(function(){ GeoJSON.parse(data); }).to.throwException(/No data found/);
+    it("returns valid GeoJSON output when input length is 0", function(done){
+      GeoJSON.parse([], {Point: ['lat', 'lng']}, function(geojson){
+        expect(geojson.type).to.be('FeatureCollection');
+        expect(geojson.features).to.be.an('array');
+        expect(geojson.features.length).to.be(0);
+        done();
+      });
     });
 
     it("throws an error if no geometry attributes have been specified", function() {
