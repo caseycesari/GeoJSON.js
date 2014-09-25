@@ -28,9 +28,7 @@ Take the example data below:
 
 Convert it to GeoJSON:
     
-    GeoJSON.parse(data, {Point: ['lat', 'lng']}, function(geojson){
-      console.log(JSON.stringify(geojson));
-    });
+    GeoJSON.parse(data, {Point: ['lat', 'lng']});
 
       { 
         "type": "FeatureCollection",
@@ -61,9 +59,7 @@ Convert it to GeoJSON:
   
 Convert the example data to GeoJSON, and only include the `name` attribute in `properties` for each feature.
     
-    GeoJSON.parse(data, {Point: ['lat', 'lng'], include: ['name']}, function(geojson){
-      console.log(JSON.stringify(geojson));
-    });
+    GeoJSON.parse(data, {Point: ['lat', 'lng'], include: ['name']});
 
       { 
         "type": "FeatureCollection",
@@ -84,33 +80,6 @@ Convert the example data to GeoJSON, and only include the `name` attribute in `p
         ]
       }
 
-Convert the example data to GeoJSON, and include some dataset attributes.
-
-    GeoJSON.parse(data, {Point: ['lat', 'lng'], attrs: {'Creator': 'Mr. Example', 'records': data.length, 'summary': 'A few example points'}}, function(geojson){
-      console.log(geojson);
-    });
-
-      { 
-        "type": "FeatureCollection",
-        "features": [
-          { "type": "Feature",
-            "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
-            "properties": { 
-              "name": "Location A"
-            }
-          },
-          ...
-          { "type": "Feature",
-            "geometry": {"type": "Point", "coordinates": [ -75.534, 39.123]},
-            "properties": { 
-              "name": "Location C"
-            }
-          }
-        ],
-        "Creator": "Mr. Example",
-        "records": 2,
-        "summary": "A few example points"
-      }
 
 The `parse` method can handle data with different geometry types. Consider the following sample data:
 
@@ -136,9 +105,7 @@ The `parse` method can handle data with different geometry types. Consider the f
 
 For each geometry type, specify which attribute contains the geometric data
 
-    GeoJSON.parse(data2, {'Point': ['x', 'y'], 'LineString': 'line', 'Polygon': 'polygon'}, function(geojson){
-      console.log(JSON.stringify(geojson));
-    });
+    GeoJSON.parse(data2, {'Point': ['x', 'y'], 'LineString': 'line', 'Polygon': 'polygon'});
 
     {
       "type": "FeatureCollection",
@@ -188,9 +155,7 @@ You can also specify default settings if you will be parsing mutliple datasets w
 
     GeoJSON.defaults = {Point: ['x', 'y'], include: ['name']};
 
-    GeoJSON.parse(data1, {}, function(geojson){
-      console.log(JSON.stringify(geojson));
-    });
+    GeoJSON.parse(data1, {});
 
     {
       "type": "FeatureCollection",
@@ -208,9 +173,7 @@ You can also specify default settings if you will be parsing mutliple datasets w
       ]
     }
 
-    GeoJSON.parse(data2, {}, function(geojson){
-      console.log(geojson.js)
-    });
+    GeoJSON.parse(data2, {});
 
     {
       "type": "FeatureCollection",
@@ -228,7 +191,7 @@ You can also specify default settings if you will be parsing mutliple datasets w
       ]
     }
 
-If you specify a callback function, the GeoJSON output is set as the first parameter of the function
+You can specify a callback function as an option third parameter.
 
     GeoJSON.parse(data, {Point: ['lat', 'lng']}, function(geojson){
       console.log(JSON.stringify(geojson));
@@ -290,9 +253,6 @@ You can add arbitrary properties to features using the `extra` param. The value 
           "opacity": 0.65
         }
       }
-    },
-      function(geojson){
-        console.log(JSON.stringify(geojson));
     });
 
     { 
@@ -315,7 +275,7 @@ You can add arbitrary properties to features using the `extra` param. The value 
 
 #### extraGlobal
 
-You can also add dataset properties using the `extraGlobal` param. The value for `extraGlobal` must be an object. For example, see below:
+You can also add dataset properties using the `extraGlobal` param. The value for `extraGlobal` must be an object.
 
     GeoJSON.parse(data, {
       Point: ['lat', 'lng'], 
@@ -324,8 +284,6 @@ You can also add dataset properties using the `extraGlobal` param. The value for
         'records': data.length, 
         'summary': 'A few example points'
       }
-    }, function(geojson){
-      console.log(geojson);
     });
 
       { 
