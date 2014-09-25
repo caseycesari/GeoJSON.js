@@ -2,7 +2,7 @@
   "name": "geojson",
   "description": "Convert an array of geographic objects to GeoJSON",
   "author": "Casey Thomas <caseypthomas@gmail.com>",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "main": "./geojson",
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
     "grunt-lib-phantomjs": "~0.3.1"
   },
   "engines": {
-    "node": "0.8.x"
+    "node": "0.10.x"
   },
   "scripts": {
     "test": "mocha"
