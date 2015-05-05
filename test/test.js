@@ -286,6 +286,17 @@ describe('GeoJSON', function() {
       });
     });
 
+    it("returns valid GeoJSON output for 0,0", function(done){
+      GeoJSON.parse([{ lat: 0, lng: 0 }], {Point: ['lat', 'lng']}, function(geojson){
+        expect(geojson.type).to.be('FeatureCollection');
+        expect(geojson.features).to.be.an('array');
+        expect(geojson.features.length).to.be(1);
+        expect(geojson.features[0].geometry.coordinates[0]).to.equal(0);
+        expect(geojson.features[0].geometry.coordinates[1]).to.equal(0);
+        done();
+      });
+    });
+
     it("throws an error if no geometry attributes have been specified", function() {
       expect(function(){ GeoJSON.parse(data); }).to.throwException(/No geometry attributes specified/);
     });

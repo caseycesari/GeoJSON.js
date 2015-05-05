@@ -122,15 +122,18 @@
         attr;
 
     for(var gtype in params.geom) {
-      attr = (typeof params.geom[gtype] === 'object') ? params.geom[gtype][0] : params.geom[gtype];
-      if(params.geom.hasOwnProperty(gtype) && item[attr]) {
-        geom.type = gtype;
+      var val = params.geom[gtype];
 
-        if(typeof params.geom[gtype] === 'string') {
-          geom.coordinates = item[params.geom[gtype]];
-        } else {
-          geom.coordinates = [item[params.geom[gtype][1]], item[params.geom[gtype][0]]];
-        }
+      // Geometry parameter specified as: {Point: 'coords'}
+      if(typeof val === 'string' && item.hasOwnProperty(val)) {
+        geom.type = gtype;
+        geom.coordinates = item[val];
+      }
+
+      // Geometry parameter specified as: {Point: ['lat', 'lng']}
+      else if(Array.isArray(val) && item.hasOwnProperty(val[0]) && item.hasOwnProperty(val[1])){
+        geom.type = gtype;
+        geom.coordinates = [item[val[1]], item[val[0]]];
       }
     }
 
