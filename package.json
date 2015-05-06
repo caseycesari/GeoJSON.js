@@ -2,7 +2,7 @@
   "name": "geojson",
   "description": "Convert an array of geographic objects to GeoJSON",
   "author": "Casey Thomas <caseypthomas@gmail.com>",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "./geojson",
   "repository": {
     "type": "git",
