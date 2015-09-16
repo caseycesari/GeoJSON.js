@@ -52,12 +52,7 @@
   // if they have been specified
   function addOptionals(geojson, settings){
     if(settings.crs) {
-      geojson.crs = {
-        type: "name",
-        properties: {
-          name: settings.crs
-        }
-      };
+      geojson.crs = settings.crs
     }
     if (settings.bbox) {
       geojson.bbox = settings.bbox;
