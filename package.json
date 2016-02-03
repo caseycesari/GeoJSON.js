@@ -2,6 +2,8 @@
   "name": "geojson",
   "description": "Convert an array of geographic objects to GeoJSON",
   "author": "Casey Thomas <caseypthomas@gmail.com>",
+  "license": "MIT",
+  "keywords": "geojson",
   "version": "0.2.1",
   "main": "./geojson",
   "repository": {
