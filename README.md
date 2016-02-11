@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/caseypt/GeoJSON.js.svg?branch=master)](https://travis-ci.org/caseypt/GeoJSON.js)
+
 # GeoJSON.js
 
 Convert an array of objects with geometry to a [GeoJSON](http://geojson.org/) feature collection.
