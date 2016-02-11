@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.org/caseypt/GeoJSON.js.svg?branch=master)](https://travis-ci.org/caseypt/GeoJSON.js)
 
 # GeoJSON.js
-
 Convert an array of objects with geometry to a [GeoJSON](http://geojson.org/) feature collection.
 
 ## Installation
@@ -239,7 +238,7 @@ The valid geometry types are
 
 geojson.js also supports the optional GeoJSON properties `bbox` and `crs`.
 
-- `crs` - A string identifying a coordinate reference system. Only named CRSs are supported at the moment. [More information](http://geojson.org/geojson-spec.html#named-crs)
+- `crs` - An object identifying a coordinate reference system. [More information](http://geojson.org/geojson-spec.html#coordinate-reference-system-objects)
 - `bbox` - A bounding box for the feature collection. An array with the following format: `[y1, x1, y2, x2]`. [More information](http://geojson.org/geojson-spec.html#bounding-boxes)
 
 #### extra
