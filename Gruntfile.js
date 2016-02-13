@@ -18,7 +18,7 @@ module.exports = function(grunt) {
     uglify: {
       options: {
         banner: '// <%= pkg.name %>.js - v<%= pkg.version %>\n' +
-                '// (c) 2015 Casey Thomas, MIT License \n'
+                '// (c) 2016 Casey Thomas, MIT License \n'
       },
       dist: {
         files: {
