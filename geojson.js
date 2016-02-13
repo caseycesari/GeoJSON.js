@@ -15,7 +15,7 @@
     geomAttrs.length = 0; // Reset the list of geometry fields
     setGeom(settings);
     propFunc = getPropFunction(settings);
-    
+
     objects.forEach(function(item){
       geojson.features.push(getFeature(item, settings, propFunc));
     });
@@ -51,13 +51,8 @@
   // Adds the optional GeoJSON properties crs and bbox
   // if they have been specified
   function addOptionals(geojson, settings){
-    if(settings.crs) {
-      geojson.crs = {
-        type: "name",
-        properties: {
-          name: settings.crs
-        }
-      };
+    if(settings.crs && checkCRS(settings.crs)) {
+      geojson.crs = settings.crs;
     }
     if (settings.bbox) {
       geojson.bbox = settings.bbox;
@@ -67,6 +62,25 @@
       for (var key in settings.extraGlobal) {
         geojson.properties[key] = settings.extraGlobal[key];
       }
+    }
+  }
+
+  // Verify that the structure of CRS object is valid
+  function checkCRS(crs) {
+    if (crs.type === 'name') {
+        if (crs.properties && crs.properties.name) {
+            return true;
+        } else {
+            throw new Error('Invalid CRS. Properties must contain "name" key');
+        }
+    } else if (crs.type === 'link') {
+        if (crs.properties && crs.properties.href && crs.properties.type) {
+            return true;
+        } else {
+            throw new Error('Invalid CRS. Properties must contain "href" and "type" key');
+        }
+    } else {
+        throw new Error('Invald CRS. Type attribute must be "name" or "link"');
     }
   }
 

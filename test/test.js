@@ -181,12 +181,12 @@ describe('GeoJSON', function() {
       GeoJSON.defaults = {
         Point: ['lat', 'lng'],
         include: ['name'],
-        crs: 'urn:ogc:def:crs:EPSG::4326'
+        crs: { 'type': 'name', 'properties': { 'name': 'urn:ogc:def:crs:OGC:1.3:CRS84' }}
       };
 
       var output = GeoJSON.parse(data, {});
 
-      expect(output.crs.properties.name).to.be('urn:ogc:def:crs:EPSG::4326');
+      expect(output.crs.properties.name).to.be('urn:ogc:def:crs:OGC:1.3:CRS84');
 
       output.features.forEach(function(feature){
         expect(feature.properties.name).to.be.ok();
@@ -229,7 +229,7 @@ describe('GeoJSON', function() {
       var output = GeoJSON.parse(data, {
         Point: ['lat', 'lng'],
         bbox: [-75, 39, -76, 40],
-        crs: 'urn:ogc:def:crs:EPSG::4326'});
+        crs: { 'type': 'name', 'properties': { 'name': 'urn:ogc:def:crs:EPSG::4326' }}});
 
       expect(output.crs.properties.name).to.be('urn:ogc:def:crs:EPSG::4326');
       expect(output.bbox[0]).to.be(-75);
@@ -327,5 +327,48 @@ describe('GeoJSON', function() {
       });
     });
 
+    it("checks for invalid CRS's", function() {
+      var options = {
+        Point: ['lat', 'lng'],
+        crs: { 'type': 'foo' }
+      };
+
+      expect(function(){ GeoJSON.parse(data, options); }).to.throwException('Invald CRS. Type attribute must be "name" or "link"');
+
+      options = {
+        Point: ['lat', 'lng'],
+        crs: { 'type': 'name', 'properties': 'foo' }
+      };
+
+      expect(function(){ GeoJSON.parse(data, options); }).to.throwException('Invalid CRS. Properties must contain "name" key');
+
+      options = {
+        Point: ['lat', 'lng'],
+        crs: { 'type': 'name', 'properties': { 'name': 'foo' }}
+      };
+
+      expect(function(){ GeoJSON.parse(data, options); }).to.not.throwException();
+
+      options = {
+        Point: ['lat', 'lng'],
+        crs: { 'type': 'link', 'properties': { 'name': 'foo' }}
+      };
+
+      expect(function(){ GeoJSON.parse(data, options); }).to.throwException('Invalid CRS. Properties must contain "href" and "type" key');
+
+      options = {
+        Point: ['lat', 'lng'],
+        crs: { 'type': 'link', 'properties': { 'type': 'foo' }}
+      };
+
+      expect(function(){ GeoJSON.parse(data, options); }).to.throwException('Invalid CRS. Properties must contain "href" and "type" key');
+
+      options = {
+        Point: ['lat', 'lng'],
+        crs: { 'type': 'link', 'properties': { 'type': 'foo', 'href': 'bar' }}
+      };
+
+      expect(function(){ GeoJSON.parse(data, options); }).to.not.throwException();
+    });
   });
 });
