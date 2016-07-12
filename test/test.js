@@ -98,6 +98,18 @@ describe('GeoJSON', function() {
       expect(geoOneAttr.features[0].geometry.coordinates[1]).to.be(39.0);
     });
 
+    it('parses object to single feature', function() {
+        var output = GeoJSON.parse(data[0], {Point: ['lat', 'lng']});
+
+        expect(output.type).to.be('Feature');
+        expect(output.geometry.type).to.be('Point');
+        expect(output.geometry.coordinates[1]).to.be(39.984);
+        expect(output.geometry.coordinates[0]).to.be(-75.343);
+        expect(output.properties.name).to.be('Location A');
+        expect(output.properties.category).to.be('Store');
+        expect(output.properties.street).to.be('Market');
+    });
+
     it('parses data with different geometry types', function(){
       // Based off example spec at http://geojson.org/geojson-spec.html
       var data2 = [

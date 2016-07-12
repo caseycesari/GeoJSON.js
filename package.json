@@ -4,7 +4,7 @@
   "author": "Casey Thomas <caseypthomas@gmail.com>",
   "license": "MIT",
   "keywords": "geojson",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "main": "./geojson",
   "repository": {
     "type": "git",
