@@ -1,5 +1,5 @@
 (function(GeoJSON) {
-  const util = require('util');
+  var util = require('util');
 
   GeoJSON.version = '0.3.1';
 
