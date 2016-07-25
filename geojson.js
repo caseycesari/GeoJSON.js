@@ -1,6 +1,4 @@
 (function(GeoJSON) {
-  var util = require('util');
-
   GeoJSON.version = '0.3.1';
 
   // Allow user to specify default parameters
@@ -18,7 +16,7 @@
     setGeom(settings);
     propFunc = getPropFunction(settings);
 
-    if (util.isArray(objects)) {
+    if (Array.isArray(objects)) {
       geojson = {"type": "FeatureCollection", "features": []};
       objects.forEach(function(item){
         geojson.features.push(getFeature(item, settings, propFunc));
