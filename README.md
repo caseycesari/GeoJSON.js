@@ -234,6 +234,27 @@ The valid geometry types are
 - `Polygon`
 - `MultiPolygon`
 
+To parse already encoded GeoJSON use
+  
+`GeoJSON`
+
+    var data = [{name: 'Location A', geo: {"type": "Point", "coordinates": [125.6, 10.1]}}];
+    
+    GeoJSON.parse(data, {GeoJSON: 'geo'});
+
+	"type": "FeatureCollection",
+	"features": [{
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [125.6, 10.1]
+		},
+		"properties": {
+			"name": "Location A"
+		}
+	}]
+}
+
 #### bbox, crs
 
 geojson.js also supports the optional GeoJSON properties `bbox` and `crs`.

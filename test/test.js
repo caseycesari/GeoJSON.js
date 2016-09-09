@@ -370,5 +370,20 @@ describe('GeoJSON', function() {
 
       expect(function(){ GeoJSON.parse(data, options); }).to.not.throwException();
     });
+
+    it("accepts already formatted GeoJSON", function() {
+
+        var data = [{name: 'Location A', geo: {"type": "Point", "coordinates": [125.6, 10.1]}}];
+        var output = GeoJSON.parse(data, {GeoJSON: 'geo'});
+
+        expect(output.type).to.be('FeatureCollection');
+        expect(output.features).to.be.an('array');
+        expect(output.features.length).to.be(1);
+        expect(output.features[0].geometry.coordinates[0]).to.equal(125.6);
+        expect(output.features[0].geometry.coordinates[1]).to.equal(10.1);
+        expect(output.features[0].geometry.type).to.equal('Point');
+        expect(output.features[0].properties.name).to.equal('Location A');
+
+    });
   });
 });
