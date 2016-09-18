@@ -395,7 +395,16 @@ describe('GeoJSON', function() {
         expect(output.features[0].geometry.coordinates[1]).to.equal(10.1);
         expect(output.features[0].geometry.type).to.equal('Point');
         expect(output.features[0].properties.name).to.equal('Location A');
+    });
 
+    it("converts string coordinates into numbers", function() {
+      var data = [{ lat: '39.343', lng: '-74.454'}];
+      var output = GeoJSON.parse(data, {Point: ['lat', 'lng']});
+
+      output.features.forEach(function(feature) {
+        expect(feature.geometry.coordinates[0]).to.be.a('number');
+        expect(feature.geometry.coordinates[1]).to.be.a('number');
+      });
     });
   });
 });

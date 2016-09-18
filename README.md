@@ -17,10 +17,10 @@ In the browser, the library is available at `GeoJSON`.
 
 ## Example Usage
 
-The library has one method, `parse`, which takes an array of objects with geometry data as the first parameter, an object consisting of settings for the second parameter, and an optional callback function as the third parameter. If a callback is not specified, the `parse` function returns the GeoJSON output.
+The library has one method, `parse`, which takes an array of objects (or a single object) with geometry data as the first parameter, an object consisting of settings for the second parameter, and an optional callback function as the third parameter. If a callback is not specified, the `parse` function returns the GeoJSON output.
 
 Take the example data below:
-    
+
 ```javascript
 var data = [
   { name: 'Location A', category: 'Store', street: 'Market', lat: 39.984, lng: -75.343 },
@@ -30,30 +30,30 @@ var data = [
 ```
 
 Convert it to GeoJSON:
-    
+
 ```javascript
 GeoJSON.parse(data, {Point: ['lat', 'lng']});
 
-{ 
+{
   "type": "FeatureCollection",
   "features": [
     { "type": "Feature",
       "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
-      "properties": { 
+      "properties": {
         "name": "Location A",
         "category": "Store"
       }
     },
     { "type": "Feature",
       "geometry": {"type": "Point", "coordinates": [-75.833, 39.284]},
-      "properties": { 
+      "properties": {
         "name": "Location B",
         "category": "House"
       }
     },
     { "type": "Feature",
       "geometry": {"type": "Point", "coordinates": [ -75.534, 39.123]},
-      "properties": { 
+      "properties": {
         "name": "Location C",
         "category": "Office"
       }
@@ -63,23 +63,23 @@ GeoJSON.parse(data, {Point: ['lat', 'lng']});
 ```
 
 Convert the example data to GeoJSON, and only include the `name` attribute in `properties` for each feature.
-    
+
 ```javascript
 GeoJSON.parse(data, {Point: ['lat', 'lng'], include: ['name']});
 
-{ 
+{
   "type": "FeatureCollection",
   "features": [
     { "type": "Feature",
       "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
-      "properties": { 
+      "properties": {
         "name": "Location A"
       }
     },
     ...
     { "type": "Feature",
       "geometry": {"type": "Point", "coordinates": [ -75.534, 39.123]},
-      "properties": { 
+      "properties": {
         "name": "Location C"
       }
     }
@@ -88,27 +88,27 @@ GeoJSON.parse(data, {Point: ['lat', 'lng'], include: ['name']});
 ```
 
 You can also convert a single object to a GeoJSON feature:
-    
+
 ```javascript
 var singleobject = { name: 'Location A', category: 'Store', street: 'Market', lat: 39.984, lng: -75.343 }
 
 GeoJSON.parse(singleobject, {Point: ['lat', 'lng']});
 
-  { 
+  {
     "type": "Feature",
     "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
-    "properties": { 
+    "properties": {
       "name": "Location A",
       "category": "Store"
     }
   }      
 ```
-  
+
 The `parse` method can handle data with different geometry types. Consider the following sample data:
 
 ```javascript
 var data2 = [
-  { 
+  {
     x: 0.5,
     y: 102.0,
     prop0: 'value0'
@@ -255,9 +255,9 @@ or
 
     GeoJSON.parse(data, {Point: 'coords'});
 
-The valid geometry types are 
+The valid geometry types are
 
-- `Point` 
+- `Point`
 - `MultiPoint`
 - `LineString`
 - `MultiLineString`
@@ -307,12 +307,12 @@ You can add arbitrary properties to features using the `extra` param. The value 
       }
     });
 
-    { 
+    {
       "type": "FeatureCollection",
       "features": [
         { "type": "Feature",
           "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
-          "properties": { 
+          "properties": {
             "name": "Location A",
             "category": "Store",
             "style": {
@@ -330,27 +330,27 @@ You can add arbitrary properties to features using the `extra` param. The value 
 You can also add dataset properties using the `extraGlobal` param. The value for `extraGlobal` must be an object.
 
     GeoJSON.parse(data, {
-      Point: ['lat', 'lng'], 
+      Point: ['lat', 'lng'],
       extraGlobal: {
-        'Creator': 'Mr. Example', 
-        'records': data.length, 
+        'Creator': 'Mr. Example',
+        'records': data.length,
         'summary': 'A few example points'
       }
     });
 
-      { 
+      {
         "type": "FeatureCollection",
         "features": [
           { "type": "Feature",
             "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
-            "properties": { 
+            "properties": {
               "name": "Location A"
             }
           },
           ...
           { "type": "Feature",
             "geometry": {"type": "Point", "coordinates": [ -75.534, 39.123]},
-            "properties": { 
+            "properties": {
               "name": "Location C"
             }
           }
