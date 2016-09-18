@@ -145,7 +145,7 @@
       // Geometry parameter specified as: {Point: 'coords'}
       if(typeof val === 'string' && item.hasOwnProperty(val)) {
         if(gtype === 'GeoJSON') {
-          geom = item[val]
+          geom = item[val];
         } else {
           geom.type = gtype;
           geom.coordinates = item[val];
