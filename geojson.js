@@ -34,7 +34,7 @@
   };
 
   // Helper functions
-  var geoms = ['Point', 'MultiPoint', 'LineString', 'MultiLineString', 'Polygon', 'MultiPolygon'],
+  var geoms = ['Point', 'MultiPoint', 'LineString', 'MultiLineString', 'Polygon', 'MultiPolygon', 'GeoJSON'],
       geomAttrs = [];
 
   // Adds default settings to user-specified params
@@ -144,8 +144,12 @@
 
       // Geometry parameter specified as: {Point: 'coords'}
       if(typeof val === 'string' && item.hasOwnProperty(val)) {
-        geom.type = gtype;
-        geom.coordinates = item[val];
+        if(gtype === 'GeoJSON') {
+          geom = item[val]
+        } else {
+          geom.type = gtype;
+          geom.coordinates = item[val];
+        }
       }
 
       // Geometry parameter specified as: {Point: ['lat', 'lng']}
