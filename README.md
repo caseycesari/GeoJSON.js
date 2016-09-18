@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/caseypt/GeoJSON.js.svg?branch=master)](https://travis-ci.org/caseypt/GeoJSON.js)
 
 # GeoJSON.js
-Convert an array of objects with geometry to a [GeoJSON](http://geojson.org/) feature collection.
+Turn your geo data into [GeoJSON](http://geojson.org/).
 
 ## Installation
 
@@ -265,11 +265,11 @@ The valid geometry types are
 - `MultiPolygon`
 
 To parse already encoded GeoJSON use
-  
+
 `GeoJSON`
 
     var data = [{name: 'Location A', geo: {"type": "Point", "coordinates": [125.6, 10.1]}}];
-    
+
     GeoJSON.parse(data, {GeoJSON: 'geo'});
 
 	"type": "FeatureCollection",
