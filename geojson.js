@@ -151,7 +151,7 @@
       // Geometry parameter specified as: {Point: ['lat', 'lng']}
       else if(Array.isArray(val) && item.hasOwnProperty(val[0]) && item.hasOwnProperty(val[1])){
         geom.type = gtype;
-        geom.coordinates = [item[val[1]], item[val[0]]];
+        geom.coordinates = [Number(item[val[1]]), Number(item[val[0]])];
       }
     }
 
