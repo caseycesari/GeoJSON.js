@@ -21,182 +21,212 @@ The library has one method, `parse`, which takes an array of objects with geomet
 
 Take the example data below:
     
-    var data = [
-      { name: 'Location A', category: 'Store', street: 'Market', lat: 39.984, lng: -75.343 },
-      { name: 'Location B', category: 'House', street: 'Broad', lat: 39.284, lng: -75.833 },
-      { name: 'Location C', category: 'Office', street: 'South', lat: 39.123, lng: -74.534 }
-    ];
+```javascript
+var data = [
+  { name: 'Location A', category: 'Store', street: 'Market', lat: 39.984, lng: -75.343 },
+  { name: 'Location B', category: 'House', street: 'Broad', lat: 39.284, lng: -75.833 },
+  { name: 'Location C', category: 'Office', street: 'South', lat: 39.123, lng: -74.534 }
+];
+```
 
 Convert it to GeoJSON:
     
-    GeoJSON.parse(data, {Point: ['lat', 'lng']});
+```javascript
+GeoJSON.parse(data, {Point: ['lat', 'lng']});
 
-      { 
-        "type": "FeatureCollection",
-        "features": [
-          { "type": "Feature",
-            "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
-            "properties": { 
-              "name": "Location A",
-              "category": "Store"
-            }
-          },
-          { "type": "Feature",
-            "geometry": {"type": "Point", "coordinates": [-75.833, 39.284]},
-            "properties": { 
-              "name": "Location B",
-              "category": "House"
-            }
-          },
-          { "type": "Feature",
-            "geometry": {"type": "Point", "coordinates": [ -75.534, 39.123]},
-            "properties": { 
-              "name": "Location C",
-              "category": "Office"
-            }
-          }
-        ]
+{ 
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
+      "properties": { 
+        "name": "Location A",
+        "category": "Store"
       }
-  
+    },
+    { "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-75.833, 39.284]},
+      "properties": { 
+        "name": "Location B",
+        "category": "House"
+      }
+    },
+    { "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [ -75.534, 39.123]},
+      "properties": { 
+        "name": "Location C",
+        "category": "Office"
+      }
+    }
+  ]
+}
+```
+
 Convert the example data to GeoJSON, and only include the `name` attribute in `properties` for each feature.
     
-    GeoJSON.parse(data, {Point: ['lat', 'lng'], include: ['name']});
+```javascript
+GeoJSON.parse(data, {Point: ['lat', 'lng'], include: ['name']});
 
-      { 
-        "type": "FeatureCollection",
-        "features": [
-          { "type": "Feature",
-            "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
-            "properties": { 
-              "name": "Location A"
-            }
-          },
-          ...
-          { "type": "Feature",
-            "geometry": {"type": "Point", "coordinates": [ -75.534, 39.123]},
-            "properties": { 
-              "name": "Location C"
-            }
-          }
-        ]
+{ 
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
+      "properties": { 
+        "name": "Location A"
       }
+    },
+    ...
+    { "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [ -75.534, 39.123]},
+      "properties": { 
+        "name": "Location C"
+      }
+    }
+  ]
+}
+```
 
+You can also convert a single object to a GeoJSON feature:
+    
+```javascript
+var singleobject = { name: 'Location A', category: 'Store', street: 'Market', lat: 39.984, lng: -75.343 }
 
+GeoJSON.parse(singleobject, {Point: ['lat', 'lng']});
+
+  { 
+    "type": "Feature",
+    "geometry": {"type": "Point", "coordinates": [-75.343, 39.984]},
+    "properties": { 
+      "name": "Location A",
+      "category": "Store"
+    }
+  }      
+```
+  
 The `parse` method can handle data with different geometry types. Consider the following sample data:
 
-    var data2 = [
-      { 
-        x: 0.5,
-        y: 102.0,
-        prop0: 'value0'
-      },
-      {
-        line: [[102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]],
-        prop0: 'value0',
-        prop1: 0.0
-      },
-      {
-        polygon: [
-          [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ]
-        ],
-        prop0: 'value0',
-        prop1: {"this": "that"}
-      }
-    ];
+```javascript
+var data2 = [
+  { 
+    x: 0.5,
+    y: 102.0,
+    prop0: 'value0'
+  },
+  {
+    line: [[102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]],
+    prop0: 'value0',
+    prop1: 0.0
+  },
+  {
+    polygon: [
+      [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ]
+    ],
+    prop0: 'value0',
+    prop1: {"this": "that"}
+  }
+];
+```
 
 For each geometry type, specify which attribute contains the geometric data
 
-    GeoJSON.parse(data2, {'Point': ['x', 'y'], 'LineString': 'line', 'Polygon': 'polygon'});
+```javascript
+GeoJSON.parse(data2, {'Point': ['x', 'y'], 'LineString': 'line', 'Polygon': 'polygon'});
 
+{
+  "type": "FeatureCollection",
+  "features": [
     {
-      "type": "FeatureCollection",
-      "features": [
-        {
-          "type": "Feature",
-          "geometry": {
-            "type": "Point",
-            "coordinates": [102,0.5]
-          },
-          "properties": {
-            "prop0": "value0"
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [102,0.5]
+      },
+      "properties": {
+        "prop0": "value0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[102, 0], [103, 1], [104, 0],[105, 1]]
+      },
+      "properties": {
+        "prop0": "value0",
+        "prop1": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[100, 0], [101, 0], [101, 1], [100, 1], [100, 0]]]
+      },
+      "properties": {
+        "prop0": "value0",
+        "prop1": {
+            "this": "that"
           }
-        },
-        {
-          "type": "Feature",
-          "geometry": {
-            "type": "LineString",
-            "coordinates": [[102, 0], [103, 1], [104, 0],[105, 1]]
-          },
-          "properties": {
-            "prop0": "value0",
-            "prop1": 0
-          }
-        },
-        {
-          "type": "Feature",
-          "geometry": {
-            "type": "Polygon",
-            "coordinates": [[[100, 0], [101, 0], [101, 1], [100, 1], [100, 0]]]
-          },
-          "properties": {
-            "prop0": "value0",
-            "prop1": {
-                "this": "that"
-              }
-          }
-        }
-      ]
+      }
     }
+  ]
+}
+```
 
 You can also specify default settings if you will be parsing mutliple datasets with similiar attributes.
 
-    var data1 = [{ name: 'Location A', street: 'Market', x: 34, y: -75 }];
+```javascript
+var data1 = [{ name: 'Location A', street: 'Market', x: 34, y: -75 }];
 
-    var data2 = [{ name: 'Location B', date: '11/23/2012', x: 54, y: -98 }];
+var data2 = [{ name: 'Location B', date: '11/23/2012', x: 54, y: -98 }];
 
-    GeoJSON.defaults = {Point: ['x', 'y'], include: ['name']};
+GeoJSON.defaults = {Point: ['x', 'y'], include: ['name']};
 
-    GeoJSON.parse(data1, {});
+GeoJSON.parse(data1, {});
 
+{
+  "type": "FeatureCollection",
+  "features": [
     {
-      "type": "FeatureCollection",
-      "features": [
-        {
-          "type": "Feature",
-          "geometry": {
-            "type": "Point",
-            "coordinates": [-75, 34]
-          },
-          "properties": {
-            "name": "Location A"
-          }
-        }
-      ]
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75, 34]
+      },
+      "properties": {
+        "name": "Location A"
+      }
     }
+  ]
+}
 
-    GeoJSON.parse(data2, {});
+GeoJSON.parse(data2, {});
 
+{
+  "type": "FeatureCollection",
+  "features": [
     {
-      "type": "FeatureCollection",
-      "features": [
-        {
-          "type": "Feature",
-          "geometry": {
-            "type": "Point",
-            "coordinates": [-98, 54]
-          },
-          "properties": {
-            "name": "Location B"
-          }
-        }
-      ]
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-98, 54]
+      },
+      "properties": {
+        "name": "Location B"
+      }
     }
+  ]
+}
+```
 
 You can specify a callback function as an option third parameter.
 
-    GeoJSON.parse(data, {Point: ['lat', 'lng']}, function(geojson){
-      console.log(JSON.stringify(geojson));
-    });
+```javascript
+GeoJSON.parse(data, {Point: ['lat', 'lng']}, function(geojson){
+  console.log(JSON.stringify(geojson));
+});
+```
 
 ## Parameters
 

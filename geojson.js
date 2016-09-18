@@ -1,5 +1,5 @@
 (function(GeoJSON) {
-  GeoJSON.version = '0.3.0';
+  GeoJSON.version = '0.3.1';
 
   // Allow user to specify default parameters
   GeoJSON.defaults = {};
@@ -8,7 +8,7 @@
   // Converts an array of objects into a GeoJSON feature collection
   GeoJSON.parse = function(objects, params, callback) {
 
-    var geojson = {"type": "FeatureCollection", "features": []},
+    var geojson,
         settings = applyDefaults(params, this.defaults),
         propFunc;
 
@@ -16,11 +16,15 @@
     setGeom(settings);
     propFunc = getPropFunction(settings);
 
-    objects.forEach(function(item){
-      geojson.features.push(getFeature(item, settings, propFunc));
-    });
-
-    addOptionals(geojson, settings);
+    if (Array.isArray(objects)) {
+      geojson = {"type": "FeatureCollection", "features": []};
+      objects.forEach(function(item){
+        geojson.features.push(getFeature(item, settings, propFunc));
+      });
+      addOptionals(geojson, settings);
+    } else {
+      geojson = getFeature(objects, settings, propFunc);
+    }
 
     if (callback && typeof callback === 'function') {
       callback(geojson);
