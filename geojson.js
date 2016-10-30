@@ -157,6 +157,24 @@
         geom.type = gtype;
         geom.coordinates = [Number(item[val[1]]), Number(item[val[0]])];
       }
+      
+      // Geometry parameter specified as: {Point: ['container.lat', 'container.lng']}
+      else if(Array.isArray(val) && /^.+\..+$/.test(val[0]) && /.+\..+$/.test(val[1])){
+        var coordinates = [];
+        for (var i = 0; i < val.length; i++) {	// i.e. 0 and 1
+          var args = val[i].split('.');
+          var itemClone = item;
+          for (var j = 0; j < args.length; j++) {
+            if (!itemClone.hasOwnProperty(args[j])) {
+              return false;
+            }
+            itemClone = itemClone[args[j]];	// Iterate deeper into the object
+          }
+          coordinates[i] = itemClone;
+        }
+        geom.type = gtype;
+        geom.coordinates = [Number(coordinates[1]), Number(coordinates[0])];
+      }
     }
 
     return geom;
