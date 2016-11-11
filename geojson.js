@@ -2,12 +2,39 @@
   GeoJSON.version = '0.4.1';
 
   // Allow user to specify default parameters
-  GeoJSON.defaults = {};
+  GeoJSON.defaults = {
+    doThrows: {
+      invalidGeometry: false
+    }
+  };
+
+  function InvalidGeometryError() {
+    var args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
+    var item = args.shift();
+    var params = args.shift();
+
+    Error.apply(this, args);
+    this.message = this.message || "Invalid Geometry: " + 'item: ' + JSON.stringify(item) + ', params: ' + JSON.stringify(params);
+  }
+
+  InvalidGeometryError.prototype = Error;
+
+
+  GeoJSON.errors = {
+    InvalidGeometryError: InvalidGeometryError
+  };
+
+  //exposing so this can be overriden maybe by geojson-validation or the like
+  GeoJSON.isGeometryValid = function(geometry){
+    if(!geometry || !Object.keys(geometry).length)
+      return false;
+
+    return !!geometry.type && !!geometry.coordinates && Array.isArray(geometry.coordinates) && !!geometry.coordinates.length;
+  };
 
   // The one and only public function.
   // Converts an array of objects into a GeoJSON feature collection
   GeoJSON.parse = function(objects, params, callback) {
-
     var geojson,
         settings = applyDefaults(params, this.defaults),
         propFunc;
@@ -19,11 +46,12 @@
     if (Array.isArray(objects)) {
       geojson = {"type": "FeatureCollection", "features": []};
       objects.forEach(function(item){
-        geojson.features.push(getFeature(item, settings, propFunc));
+        geojson.features.push(getFeature({item:item, params: settings, propFunc:propFunc}));
       });
       addOptionals(geojson, settings);
     } else {
-      geojson = getFeature(objects, settings, propFunc);
+      geojson = getFeature({item:objects, params: settings, propFunc:propFunc});
+      addOptionals(geojson, settings);
     }
 
     if (callback && typeof callback === 'function') {
@@ -56,7 +84,10 @@
   // if they have been specified
   function addOptionals(geojson, settings){
     if(settings.crs && checkCRS(settings.crs)) {
-      geojson.crs = settings.crs;
+      if(settings.isPostgres)
+        geojson.geometry.crs = settings.crs;
+      else
+        geojson.crs = settings.crs;
     }
     if (settings.bbox) {
       geojson.bbox = settings.bbox;
@@ -124,13 +155,21 @@
 
   // Creates a feature object to be added
   // to the GeoJSON features array
-  function getFeature(item, params, propFunc) {
+  function getFeature(args) {
+    var item = args.item,
+      params = args.params,
+      propFunc = args.propFunc;
+
     var feature = { "type": "Feature" };
 
     feature.geometry = buildGeom(item, params);
     feature.properties = propFunc.call(item);
 
     return feature;
+  }
+
+  function isNested(val){
+    return (/^.+\..+$/.test(val));
   }
 
   // Assembles the `geometry` property
@@ -152,29 +191,53 @@
         }
       }
 
+      /* Handle things like:
+      Polygon: {
+        northeast: ['lat', 'lng'],
+        southwest: ['lat', 'lng']
+      }
+      */
+      else if(typeof val === 'object' && !Array.isArray(val)) {
+        /*jshint loopfunc: true */
+        var points = Object.keys(val).map(function(key){
+          var order = val[key];
+          var newItem = item[key];
+          return buildGeom(newItem, {geom:{ Point: order}});
+        });
+        geom.type = gtype;
+        /*jshint loopfunc: true */
+        geom.coordinates = [].concat(points.map(function(p){
+          return p.coordinates;
+        }));
+      }
+
       // Geometry parameter specified as: {Point: ['lat', 'lng']}
       else if(Array.isArray(val) && item.hasOwnProperty(val[0]) && item.hasOwnProperty(val[1])){
         geom.type = gtype;
         geom.coordinates = [Number(item[val[1]]), Number(item[val[0]])];
       }
-      
+
       // Geometry parameter specified as: {Point: ['container.lat', 'container.lng']}
-      else if(Array.isArray(val) && /^.+\..+$/.test(val[0]) && /.+\..+$/.test(val[1])){
+      else if(Array.isArray(val) && isNested(val[0]) && isNested(val[1])){
         var coordinates = [];
         for (var i = 0; i < val.length; i++) {	// i.e. 0 and 1
-          var args = val[i].split('.');
+          var paths = val[i].split('.');
           var itemClone = item;
-          for (var j = 0; j < args.length; j++) {
-            if (!itemClone.hasOwnProperty(args[j])) {
+          for (var j = 0; j < paths.length; j++) {
+            if (!itemClone.hasOwnProperty(paths[j])) {
               return false;
             }
-            itemClone = itemClone[args[j]];	// Iterate deeper into the object
+            itemClone = itemClone[paths[j]];	// Iterate deeper into the object
           }
           coordinates[i] = itemClone;
         }
         geom.type = gtype;
         geom.coordinates = [Number(coordinates[1]), Number(coordinates[0])];
       }
+    }
+
+    if(params.doThrows && params.doThrows.invalidGeometry && !GeoJSON.isGeometryValid(geom)){
+      throw new InvalidGeometryError(item, params);
     }
 
     return geom;

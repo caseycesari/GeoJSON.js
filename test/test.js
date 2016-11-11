@@ -1,6 +1,7 @@
 if (typeof window === 'undefined') {
   var expect = require('expect.js');
   var GeoJSON = require('../geojson');
+  var util = require('util');
 }
 
 describe('GeoJSON', function() {
@@ -18,7 +19,7 @@ describe('GeoJSON', function() {
         }
       }
 
-      expect(count).to.be(0);
+      expect(count).to.be(1);
     });
   });
 
@@ -405,6 +406,65 @@ describe('GeoJSON', function() {
         expect(feature.geometry.coordinates[0]).to.be.a('number');
         expect(feature.geometry.coordinates[1]).to.be.a('number');
       });
+    });
+
+    it("throws via doThrows on InvalidGeometryError", function() {
+      var data = [{ lat: '39.343', lng: '-74.454'}];
+      expect(function(){
+        GeoJSON.parse(data, {doThrows: {invalidGeometry: true}, Point: 'lat'});
+      }).to.throwException(GeoJSON.InvalidGeometryError);
+
+    });
+
+    it("nested polygon", function() {
+      var data = {
+        northeast: { lat: 29.8399961, lng: -82.38140709999999 },
+        southwest: { lat: 29.7183041, lng: -82.555449 }
+      };
+      var output = GeoJSON.parse(data, {
+        doThrows: {invalidGeometry: true},
+        Polygon: {
+          northeast: ['lat', 'lng'],
+          southwest: ['lat', 'lng']
+        }
+      });
+
+      // console.log(util.inspect(output.geometry,4));
+      expect(output.geometry.type).to.be.equal('Polygon');
+      expect(output.geometry.coordinates.length).to.be.equal(2);
+      output.geometry.coordinates.forEach(function(coords){
+        expect(coords.length).to.be.equal(2);
+      });
+      expect(output.geometry.type).to.be.equal('Polygon');
+      expect(output.geometry.coordinates[0]).to.be.eql([-82.38140709999999, 29.8399961]);
+      expect(output.geometry.coordinates[1]).to.be.eql([-82.555449, 29.7183041]);
+    });
+
+    it("nested polygon, nested", function() {
+      var data = {
+        northeast: { crap:{lat: 29.8399961, lng: -82.38140709999999} },
+        southwest: { crap1:{lat: 29.7183041}, crap2: {lng: -82.555449} }
+      };
+      var output = GeoJSON.parse(data, {
+        doThrows: {invalidGeometry: true},
+        Polygon: {
+          northeast: ['crap.lat', 'crap.lng'],
+          southwest: ['crap1.lat', 'crap2.lng']
+        },
+        isPostgres: true,
+        crs: { 'type': 'name', 'properties': { 'name': 'urn:ogc:def:crs:OGC:1.3:CRS84' }}
+      });
+
+      // console.log(util.inspect(output.geometry,4));
+      expect(output.geometry.crs).to.be.ok();
+      expect(output.geometry.type).to.be.equal('Polygon');
+      expect(output.geometry.coordinates.length).to.be.equal(2);
+      output.geometry.coordinates.forEach(function(coords){
+        expect(coords.length).to.be.equal(2);
+      });
+      expect(output.geometry.type).to.be.equal('Polygon');
+      expect(output.geometry.coordinates[0]).to.be.eql([-82.38140709999999, 29.8399961]);
+      expect(output.geometry.coordinates[1]).to.be.eql([-82.555449, 29.7183041]);
     });
   });
 });
