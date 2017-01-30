@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/caseypt/GeoJSON.js.svg?branch=master)](https://travis-ci.org/caseypt/GeoJSON.js)
+[![Build Status](https://travis-ci.org/caseycesari/GeoJSON.js.svg?branch=master)](https://travis-ci.org/caseypt/GeoJSON.js)
 
 # GeoJSON.js
 Turn your geo data into [GeoJSON](http://geojson.org/).
