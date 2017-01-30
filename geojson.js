@@ -1,5 +1,5 @@
 (function(GeoJSON) {
-  GeoJSON.version = '0.4.0';
+  GeoJSON.version = '0.4.1';
 
   // Allow user to specify default parameters
   GeoJSON.defaults = {};
