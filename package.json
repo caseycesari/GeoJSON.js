@@ -10,8 +10,7 @@
     "type": "git",
     "url": "http://github.com/caseycesari/geojson.js.git"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "mocha": "*",
     "expect.js": "*",

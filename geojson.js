@@ -211,10 +211,34 @@
         }));
       }
 
+      // Geometry parameter specified as: {Point: ['lat', 'lng', 'alt']}
+      else if(Array.isArray(val) && item.hasOwnProperty(val[0]) && item.hasOwnProperty(val[1]) && item.hasOwnProperty(val[2])){
+        geom.type = gtype;
+        geom.coordinates = [Number(item[val[1]]), Number(item[val[0]]),  Number(item[val[2]])];
+      }
+
       // Geometry parameter specified as: {Point: ['lat', 'lng']}
       else if(Array.isArray(val) && item.hasOwnProperty(val[0]) && item.hasOwnProperty(val[1])){
         geom.type = gtype;
         geom.coordinates = [Number(item[val[1]]), Number(item[val[0]])];
+      }
+
+      // Geometry parameter specified as: {Point: ['container.lat', 'container.lng', 'container.alt']}
+      else if(Array.isArray(val) && isNested(val[0]) && isNested(val[1]) && isNested(val[2])){
+        var coordinates = [];
+        for (var i = 0; i < val.length; i++) {	// i.e. 0 and 1
+          var paths = val[i].split('.');
+          var itemClone = item;
+          for (var j = 0; j < paths.length; j++) {
+            if (!itemClone.hasOwnProperty(paths[j])) {
+              return false;
+            }
+            itemClone = itemClone[paths[j]];	// Iterate deeper into the object
+          }
+          coordinates[i] = itemClone;
+        }
+        geom.type = gtype;
+        geom.coordinates = [Number(coordinates[1]), Number(coordinates[0]), Number(coordinates[2])];
       }
 
       // Geometry parameter specified as: {Point: ['container.lat', 'container.lng']}
