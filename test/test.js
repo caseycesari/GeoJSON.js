@@ -467,4 +467,34 @@ describe('GeoJSON', function() {
       expect(output.geometry.coordinates[1]).to.be.eql([-82.555449, 29.7183041]);
     });
   });
+
+  describe('Parse points as coordinate pair', function(){
+    var data;
+
+    before(function() {
+      // Sample Data - note the coordinates
+      data = [
+        { name: 'Location A', category: 'Store', street: 'Market', coordinates: [39.984, -75.343] },
+        { name: 'Location B', category: 'House', street: 'Broad', coordinates: [39.284, -75.833] },
+        { name: 'Location C', category: 'Office', street: 'South', coordinates: [39.123, -74.534] }
+      ];
+    });
+
+    it('returns output with the same number of features as the input', function(){
+      var output = GeoJSON.parse(data, {Point: [{coordinates: ['lat', 'lng']}]});
+
+      expect(output.features.length).to.be(3);
+    });
+
+    it('returns valid coordinates for the coordinate pair', function(){
+      var output = GeoJSON.parse(data, {Point: [{coordinates: ['lat', 'lng']}]});
+
+      expect(output.features[0].geometry.coordinates[0]).to.be(data[0].coordinates[1]);
+      expect(output.features[0].geometry.coordinates[1]).to.be(data[0].coordinates[0]);
+      expect(output.features[1].geometry.coordinates[0]).to.be(data[1].coordinates[1]);
+      expect(output.features[1].geometry.coordinates[1]).to.be(data[1].coordinates[0]);
+      expect(output.features[2].geometry.coordinates[0]).to.be(data[2].coordinates[1]);
+      expect(output.features[2].geometry.coordinates[1]).to.be(data[2].coordinates[0]);
+    });
+  });
 });
