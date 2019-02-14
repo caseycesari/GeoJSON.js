@@ -104,6 +104,25 @@ GeoJSON.parse(singleobject, {Point: ['lat', 'lng']});
   }      
 ```
 
+
+For the Point geometry type, up to three positions may be used (e.g., ['lat', 'lng', 'alt']). The third position can mean anything but typically refers to altitude or elevation):
+
+```javascript
+var singleobject = { name: 'Location A', category: 'Store', street: 'Market', lat: 39.984, lng: -75.343, alt: 1024.76 }
+
+GeoJSON.parse(singleobject, {Point: ['lat', 'lng', 'alt']});
+
+  {
+    "type": "Feature",
+    "geometry": {"type": "Point", "coordinates": [-75.343, 39.984, 1024.76]},
+    "properties": {
+      "name": "Location A",
+      "category": "Store"
+    }
+  }      
+```
+
+
 The `parse` method can handle data with different geometry types. Consider the following sample data:
 
 ```javascript

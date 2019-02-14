@@ -466,6 +466,40 @@ describe('GeoJSON', function() {
       expect(output.geometry.coordinates[0]).to.be.eql([-82.38140709999999, 29.8399961]);
       expect(output.geometry.coordinates[1]).to.be.eql([-82.555449, 29.7183041]);
     });
+
+    it('can accept up to three arguments for Point', function(done) {
+      var data = [
+        { name: 'Location A', category: 'Store', lat: 39.984, lng: -75.343, alt: 22026.46, street: 'Market' },
+        // { name: 'Location B', category: 'House', lat: 39.284, lng: -75.833, alt: 8103.08, street: 'Broad' },
+        // { name: 'Location C', category: 'Office', lat: 39.123, lng: -74.534, alt: 2980.95, street: 'South' }
+      ];
+
+      GeoJSON.parse(data, { Point: ['lat', 'lng', 'alt'] }, function(geojson) {
+        expect(geojson.type).to.be('FeatureCollection');
+        expect(geojson.features).to.be.an('array');
+        expect(geojson.features.length).to.be(1);
+        expect(geojson.features[0].geometry.coordinates[0]).to.equal(-75.343);
+        expect(geojson.features[0].geometry.coordinates[1]).to.equal(39.984);
+        expect(geojson.features[0].geometry.coordinates[2]).to.equal(22026.46);
+        done();
+      });
+    });
+
+    it('can accept up to three arguments for Point in a nested structure', function(done) {
+      var data = [
+        { name: 'Location A', category: 'Store', location: { lat: 39.984, lng: -75.343, alt: 22026.46 }, street: 'Market' },
+      ];
+
+      GeoJSON.parse(data, { Point: ['location.lat', 'location.lng', 'location.alt'] }, function(geojson) {
+        expect(geojson.type).to.be('FeatureCollection');
+        expect(geojson.features).to.be.an('array');
+        expect(geojson.features.length).to.be(1);
+        expect(geojson.features[0].geometry.coordinates[0]).to.equal(-75.343);
+        expect(geojson.features[0].geometry.coordinates[1]).to.equal(39.984);
+        expect(geojson.features[0].geometry.coordinates[2]).to.equal(22026.46);
+        done();
+      });
+    });
   });
 
   describe('Parse points as coordinate pair', function(){
