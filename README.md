@@ -42,6 +42,7 @@ GeoJSON.parse(data, {Point: ['lat', 'lng']});
       "properties": {
         "name": "Location A",
         "category": "Store"
+        "street": "Market"
       }
     },
     { "type": "Feature",
@@ -49,6 +50,7 @@ GeoJSON.parse(data, {Point: ['lat', 'lng']});
       "properties": {
         "name": "Location B",
         "category": "House"
+        "street": "Broad"
       }
     },
     { "type": "Feature",
@@ -56,6 +58,7 @@ GeoJSON.parse(data, {Point: ['lat', 'lng']});
       "properties": {
         "name": "Location C",
         "category": "Office"
+        "street": "South"
       }
     }
   ]
