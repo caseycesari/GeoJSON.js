@@ -234,6 +234,12 @@
         geom.type = gtype;
         geom.coordinates = [Number(coordinates[1]), Number(coordinates[0])];
       }
+
+      // Geometry parameter specified as: {Point: [{coordinates: [lat, lng]}]}
+      else if (Array.isArray(val) && val[0].constructor.name === 'Object' && Object.keys(val[0])[0] === 'coordinates'){
+        geom.type = gtype;
+        geom.coordinates = [Number(item.coordinates[(val[0].coordinates).indexOf('lng')]), Number(item.coordinates[(val[0].coordinates).indexOf('lat')])];
+      }
     }
 
     if(params.doThrows && params.doThrows.invalidGeometry && !GeoJSON.isGeometryValid(geom)){
