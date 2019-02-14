@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/caseycesari/GeoJSON.js.svg?branch=master)](https://travis-ci.org/caseypt/GeoJSON.js)
+[![Build Status](https://travis-ci.org/caseycesari/GeoJSON.js.svg?branch=master)](https://travis-ci.org/caseycesari/GeoJSON.js)
 
 # GeoJSON.js
 Turn your geo data into [GeoJSON](http://geojson.org/).
@@ -239,10 +239,10 @@ GeoJSON.parse(data2, {});
 }
 ```
 
-You can specify a callback function as an option third parameter.
+You can specify a callback function as an optional third parameter.
 
 ```javascript
-GeoJSON.parse(data, {Point: ['lat', 'lng']}, function(geojson){
+GeoJSON.parse(data, {Point: ['lat', 'lng']}, function(geojson) {
   console.log(JSON.stringify(geojson));
 });
 ```

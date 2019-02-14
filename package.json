@@ -12,17 +12,14 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "mocha": "*",
-    "expect.js": "*",
-    "grunt": "~0.4.1",
+    "mocha": "5.2.0",
+    "expect.js": "0.3.1",
+    "grunt": "1.0.3",
     "grunt-simple-mocha": "~0.4.0",
-    "grunt-mocha": "~0.3.4",
-    "grunt-contrib-jshint": "~0.6.0",
-    "grunt-contrib-uglify": "~0.2.2",
-    "grunt-lib-phantomjs": "~0.3.1"
-  },
-  "engines": {
-    "node": ">= 0.10"
+    "grunt-mocha": "1.2.0",
+    "grunt-contrib-jshint": "2.0.0",
+    "grunt-contrib-uglify": "4.0.0",
+    "grunt-lib-phantomjs": "1.1.0"
   },
   "scripts": {
     "test": "mocha"
