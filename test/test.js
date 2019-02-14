@@ -429,7 +429,6 @@ describe('GeoJSON', function() {
         }
       });
 
-      // console.log(util.inspect(output.geometry,4));
       expect(output.geometry.type).to.be.equal('Polygon');
       expect(output.geometry.coordinates.length).to.be.equal(2);
       output.geometry.coordinates.forEach(function(coords){
@@ -455,7 +454,6 @@ describe('GeoJSON', function() {
         crs: { 'type': 'name', 'properties': { 'name': 'urn:ogc:def:crs:OGC:1.3:CRS84' }}
       });
 
-      // console.log(util.inspect(output.geometry,4));
       expect(output.geometry.crs).to.be.ok();
       expect(output.geometry.type).to.be.equal('Polygon');
       expect(output.geometry.coordinates.length).to.be.equal(2);
@@ -470,8 +468,6 @@ describe('GeoJSON', function() {
     it('can accept up to three arguments for Point', function(done) {
       var data = [
         { name: 'Location A', category: 'Store', lat: 39.984, lng: -75.343, alt: 22026.46, street: 'Market' },
-        // { name: 'Location B', category: 'House', lat: 39.284, lng: -75.833, alt: 8103.08, street: 'Broad' },
-        // { name: 'Location C', category: 'Office', lat: 39.123, lng: -74.534, alt: 2980.95, street: 'South' }
       ];
 
       GeoJSON.parse(data, { Point: ['lat', 'lng', 'alt'] }, function(geojson) {
