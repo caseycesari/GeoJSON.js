@@ -196,7 +196,7 @@ GeoJSON.parse(data2, {'Point': ['x', 'y'], 'LineString': 'line', 'Polygon': 'pol
 }
 ```
 
-You can also specify default settings if you will be parsing mutliple datasets with similiar attributes.
+You can also specify default settings if you will be parsing multiple datasets with similar attributes.
 
 ```javascript
 var data1 = [{ name: 'Location A', street: 'Market', x: 34, y: -75 }];
