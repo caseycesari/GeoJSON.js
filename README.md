@@ -9,6 +9,8 @@ For node, use npm: `$ npm install geojson`
 
 In the browser, include `geojson.min.js`. For example: `<script type="text/javascript" src="js/geojson.min.js"></script>`
 
+For Typescript environment, you can use GeoJSON.ts, a Typescript-native library, in [@EugeneYWang/GeoJSON.ts](https://github.com/eugeneYWang/GeoJSON.ts).
+
 ## Getting Started
 
 In node, `var GeoJSON = require('geojson');`
