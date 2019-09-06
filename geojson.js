@@ -230,7 +230,7 @@
           var paths = val[i].split('.');
           var itemClone = item;
           for (var j = 0; j < paths.length; j++) {
-            if (!itemClone.hasOwnProperty(paths[j])) {
+            if (itemClone == undefined || !itemClone.hasOwnProperty(paths[j])) {
               return false;
             }
             itemClone = itemClone[paths[j]];	// Iterate deeper into the object
@@ -248,7 +248,7 @@
           var paths = val[i].split('.');
           var itemClone = item;
           for (var j = 0; j < paths.length; j++) {
-            if (!itemClone.hasOwnProperty(paths[j])) {
+            if (itemClone == undefined || !itemClone.hasOwnProperty(paths[j])) {
               return false;
             }
             itemClone = itemClone[paths[j]];	// Iterate deeper into the object
