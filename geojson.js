@@ -180,6 +180,9 @@
 
     for(var gtype in params.geom) {
       var val = params.geom[gtype];
+      var coordinates = [];
+      var itemClone;
+      var paths;
 
       // Geometry parameter specified as: {Point: 'coords'}
       if(typeof val === 'string' && item.hasOwnProperty(val)) {
@@ -225,10 +228,9 @@
 
       // Geometry parameter specified as: {Point: ['container.lat', 'container.lng', 'container.alt']}
       else if(Array.isArray(val) && isNested(val[0]) && isNested(val[1]) && isNested(val[2])){
-        var coordinates = [];
         for (var i = 0; i < val.length; i++) {	// i.e. 0 and 1
-          var paths = val[i].split('.');
-          var itemClone = item;
+          paths = val[i].split('.');
+          itemClone = item;
           for (var j = 0; j < paths.length; j++) {
             if (itemClone == undefined || !itemClone.hasOwnProperty(paths[j])) {
               return false;
@@ -243,17 +245,16 @@
 
       // Geometry parameter specified as: {Point: ['container.lat', 'container.lng']}
       else if(Array.isArray(val) && isNested(val[0]) && isNested(val[1])){
-        var coordinates = [];
-        for (var i = 0; i < val.length; i++) {	// i.e. 0 and 1
-          var paths = val[i].split('.');
-          var itemClone = item;
-          for (var j = 0; j < paths.length; j++) {
-            if (itemClone == undefined || !itemClone.hasOwnProperty(paths[j])) {
+        for (var k = 0; k < val.length; k++) {	// i.e. 0 and 1
+          paths = val[k].split('.');
+          itemClone = item;
+          for (var l = 0; l < paths.length; l++) {
+            if (itemClone == undefined || !itemClone.hasOwnProperty(paths[l])) {
               return false;
             }
-            itemClone = itemClone[paths[j]];	// Iterate deeper into the object
+            itemClone = itemClone[paths[l]];	// Iterate deeper into the object
           }
-          coordinates[i] = itemClone;
+          coordinates[k] = itemClone;
         }
         geom.type = gtype;
         geom.coordinates = [Number(coordinates[1]), Number(coordinates[0])];
