@@ -496,6 +496,71 @@ describe('GeoJSON', function() {
       });
     });
 
+    it('can accept nested arguments for multiple geometries', function(done) {
+      var data = [
+        { geo: { point: { lng: 0.5, lat: 102.0 } } },
+        { geo: { line: [[102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0] ] } },
+        { geo: { polygon: [ [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ] ] } },
+        { geo: { multipoint: [ [100.0, 0.0], [101.0, 1.0] ] } },
+        { geo: { multipolygon: [ 
+            [[[102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0]]],
+            [[[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]]],
+            [[[100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2]]]
+        ] } },
+        { geo: { multilinestring: [ [ [100.0, 0.0], [101.0, 1.0] ], [ [102.0, 2.0], [103.0, 3.0] ] ] } }
+      ];
+
+      GeoJSON.parse(data, {
+        Point: ['geo.point.lng', 'geo.point.lat'],
+        'LineString': 'geo.line',
+        'Polygon': 'geo.polygon',
+        'MultiPoint': 'geo.multipoint',
+        'MultiPolygon': 'geo.multipolygon',
+        'MultiLineString': 'geo.multilinestring'
+      }, function(geojson) {
+        expect(geojson.type).to.be('FeatureCollection');
+        expect(geojson.features).to.be.an('array');
+        expect(geojson.features.length).to.be(6);
+        expect(geojson.features[0].geometry.type).to.be('Point');
+        expect(geojson.features[0].geometry.coordinates[0]).to.be(102);
+        expect(geojson.features[0].geometry.coordinates[1]).to.be(0.5);
+        expect(geojson.features[1].geometry.type).to.be('LineString');
+        expect(geojson.features[1].geometry.coordinates[0][0]).to.be(102);
+        expect(geojson.features[1].geometry.coordinates[0][1]).to.be(0);
+        expect(geojson.features[1].geometry.coordinates[3][0]).to.be(105);
+        expect(geojson.features[1].geometry.coordinates[3][1]).to.be(1);
+        expect(geojson.features[2].geometry.type).to.be('Polygon');
+        expect(geojson.features[2].geometry.coordinates[0][0][0]).to.be(100);
+        expect(geojson.features[2].geometry.coordinates[0][0][1]).to.be(0);
+        expect(geojson.features[2].geometry.coordinates[0][4][0]).to.be(100);
+        expect(geojson.features[2].geometry.coordinates[0][4][1]).to.be(0);
+        expect(geojson.features[3].geometry.type).to.be('MultiPoint');
+        expect(geojson.features[3].geometry.coordinates[0][0]).to.be(100);
+        expect(geojson.features[3].geometry.coordinates[0][1]).to.be(0);
+        expect(geojson.features[3].geometry.coordinates[1][0]).to.be(101);
+        expect(geojson.features[3].geometry.coordinates[1][1]).to.be(1);
+        expect(geojson.features[4].geometry.type).to.be('MultiPolygon');
+        expect(geojson.features[4].geometry.coordinates[0][0][0][0]).to.be(102);
+        expect(geojson.features[4].geometry.coordinates[0][0][0][1]).to.be(2);
+        expect(geojson.features[4].geometry.coordinates[0][0][4][0]).to.be(102);
+        expect(geojson.features[4].geometry.coordinates[0][0][4][1]).to.be(2);
+        expect(geojson.features[4].geometry.coordinates[2][0][0][0]).to.be(100.2);
+        expect(geojson.features[4].geometry.coordinates[2][0][0][1]).to.be(0.2);
+        expect(geojson.features[4].geometry.coordinates[2][0][4][0]).to.be(100.2);
+        expect(geojson.features[4].geometry.coordinates[2][0][4][1]).to.be(0.2);
+        expect(geojson.features[5].geometry.type).to.be('MultiLineString');
+        expect(geojson.features[5].geometry.coordinates[0][0][0]).to.be(100);
+        expect(geojson.features[5].geometry.coordinates[0][0][1]).to.be(0);
+        expect(geojson.features[5].geometry.coordinates[0][1][0]).to.be(101);
+        expect(geojson.features[5].geometry.coordinates[0][1][1]).to.be(1);
+        expect(geojson.features[5].geometry.coordinates[1][0][0]).to.be(102);
+        expect(geojson.features[5].geometry.coordinates[1][0][1]).to.be(2);
+        expect(geojson.features[5].geometry.coordinates[1][1][0]).to.be(103);
+        expect(geojson.features[5].geometry.coordinates[1][1][1]).to.be(3);
+        done();
+      });
+    });
+
     it('can handle null or undefined values when parsing nested arguments', function(done) {
       var data = [
         { geo: null },
