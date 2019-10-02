@@ -386,6 +386,17 @@ You can also add dataset properties using the `extraGlobal` param. The value for
         }
       }
 
+#### removeInvalidGeometries
+
+If passing in a list of data, you can optionally exclude invalid geometries by setting the `removeInvalidGeometries` flag to `true`.  This utilizes the `GeoJSON.isGeometryValid` function.
+
+```javascript
+GeoJSON.parse(data, {
+  Point: ['lat', 'lng'],
+  removeInvalidGeometries: true
+});
+```
+
 ## Tests
 
 For node, `$ npm test`.
