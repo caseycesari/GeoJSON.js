@@ -612,17 +612,71 @@ describe('GeoJSON', function() {
         done();
       });
     });
+  });
+
+  describe('Validates Geometry', function(){
+    var data, options;
+    before(function() {
+      // Sample Data
+      data = [
+        { name: 'Location A', category: 'Store', lat: 39.984, lng: -75.343, street: 'Market' },
+        { name: 'Location B', category: 'House', lat: 39.284, lng: -75.833, street: 'Broad' },
+        { name: 'Location C', category: 'Office', lat: 39.123, lng: -74.534, street: 'South' },
+        { name: 'Location D', category: 'Station', coordinates: [39.984, -75.353], street: 'Lower' },
+        { name: 'Location E', category: 'Park', lat: 39.984, lng: -75.353, street: 'Main' }
+      ];
+    });
 
     it('will only return geometries that are valid.', function(done) {
-      data.push({ name: 'Location D', category: 'Station', street: 'Lower', coordinates: [39.984, -75.353] });
-      data.push({ name: 'Location E', category: 'Park', street: 'Main', lat: 39.984, lng: -75.353 } );
-
-      GeoJSON.parse(data, {Point: ['lng', 'lat'], removeInvalidGeometries: true}, function(geojson) {
+      var options = {
+        Point: ['lat', 'lng'],
+        removeInvalidGeometries: true
+      };
+      GeoJSON.parse(data, options, function(geojson) {
         expect(geojson.type).to.be('FeatureCollection');
         expect(geojson.features).to.be.an('array');
         expect(geojson.features.length).to.be(4);
         done();
       });
+    });
+
+    it('will only return geometries that pass a custom validation check.', function(done){
+      var options = { Point: ['lat', 'lng'], removeInvalidGeometries: true };
+      options.isGeometryValid = function(geometry){
+        return GeoJSON.isGeometryValid(geometry) &&
+          geometry.coordinates[0] > -75.8 &&
+          geometry.coordinates[1] < 39.9;
+      };
+      GeoJSON.parse(data, options, function(geojson) {
+        expect(geojson.features.length).to.be(1);
+        done();
+      });
+    });
+
+    it('will only return geometries that pass a custom validation check provided as a default.', function(done){
+      GeoJSON.defaults = { Point: ['lat', 'lng'], removeInvalidGeometries: true };
+      GeoJSON.defaults.isGeometryValid = function(geometry){
+        return GeoJSON.isGeometryValid(geometry) &&
+          geometry.coordinates[0] > -75.8 &&
+          geometry.coordinates[1] < 39.9;
+      };
+      GeoJSON.parse(data, {}, function(geojson) {
+        expect(geojson.features.length).to.be(1);
+        delete GeoJSON.defaults;
+        done();
+      });
+    });
+
+    it('will throw an error when a geometry does not pass a custom validation check.', function(){
+      var options = { Point: ['lat', 'lng'], doThrows: { invalidGeometry: true } };
+      options.isGeometryValid = function(geometry){
+        return GeoJSON.isGeometryValid(geometry) &&
+          geometry.coordinates[0] > -75.8 &&
+          geometry.coordinates[1] < 39.9;
+      };
+      expect(function(){
+        GeoJSON.parse(data, options);
+      }).to.throwException(GeoJSON.InvalidGeometryError);
     });
   });
 
