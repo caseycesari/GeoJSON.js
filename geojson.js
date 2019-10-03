@@ -175,7 +175,7 @@
   // Assembles the `geometry` property
   // for the feature output
   function buildGeom(item, params) {
-    var geom = {},
+    var geom,
         attr;
 
     for(var gtype in params.geom) {
@@ -183,14 +183,41 @@
       var coordinates = [];
       var itemClone;
       var paths;
+      // If we've already found a matching geometry, stop the loop.
+      if (geom !== undefined && geom !== false) {
+        break;
+      }
 
       // Geometry parameter specified as: {Point: 'coords'}
       if(typeof val === 'string' && item.hasOwnProperty(val)) {
         if(gtype === 'GeoJSON') {
           geom = item[val];
         } else {
-          geom.type = gtype;
-          geom.coordinates = item[val];
+          geom = {
+            type: gtype,
+            coordinates: item[val]
+          };
+        }
+      }
+
+      // Geometry parameter specified as: {Point: 'geo.coords'}
+      else if(typeof val === 'string' && isNested(val)) {
+        geom = undefined;
+        paths = val.split('.');
+        itemClone = item;
+        for (var m = 0; m < paths.length; m++) {
+          if (itemClone == undefined || !itemClone.hasOwnProperty(paths[m])) {
+            m = paths.length;
+            geom = false;
+          } else {
+            itemClone = itemClone[paths[m]]; // Iterate deeper into the object
+          }
+        }
+        if (geom !== false) {
+          geom = {
+            type: gtype,
+            coordinates: itemClone
+          };
         }
       }
 
@@ -207,40 +234,54 @@
           var newItem = item[key];
           return buildGeom(newItem, {geom:{ Point: order}});
         });
-        geom.type = gtype;
-        /*jshint loopfunc: true */
-        geom.coordinates = [].concat(points.map(function(p){
-          return p.coordinates;
-        }));
+        geom = {
+          type: gtype,
+          /*jshint loopfunc: true */
+          coordinates: [].concat(points.map(function(p){
+            return p.coordinates;
+          }))
+        };
       }
 
       // Geometry parameter specified as: {Point: ['lat', 'lng', 'alt']}
       else if(Array.isArray(val) && item.hasOwnProperty(val[0]) && item.hasOwnProperty(val[1]) && item.hasOwnProperty(val[2])){
-        geom.type = gtype;
-        geom.coordinates = [Number(item[val[1]]), Number(item[val[0]]),  Number(item[val[2]])];
+        geom = {
+          type: gtype,
+          coordinates: [ Number(item[val[1]]), Number(item[val[0]]), Number(item[val[2]]) ]
+        };
       }
 
       // Geometry parameter specified as: {Point: ['lat', 'lng']}
       else if(Array.isArray(val) && item.hasOwnProperty(val[0]) && item.hasOwnProperty(val[1])){
-        geom.type = gtype;
-        geom.coordinates = [Number(item[val[1]]), Number(item[val[0]])];
+        geom = {
+          type: gtype,
+          coordinates: [Number(item[val[1]]), Number(item[val[0]])]
+        };
       }
 
       // Geometry parameter specified as: {Point: ['container.lat', 'container.lng', 'container.alt']}
       else if(Array.isArray(val) && isNested(val[0]) && isNested(val[1]) && isNested(val[2])){
+        geom = undefined;
         for (var i = 0; i < val.length; i++) {	// i.e. 0 and 1
           paths = val[i].split('.');
           itemClone = item;
           for (var j = 0; j < paths.length; j++) {
             if (itemClone == undefined || !itemClone.hasOwnProperty(paths[j])) {
-              return false;
+              i = val.length;
+              j = paths.length;
+              geom = false;
+            } else {
+              itemClone = itemClone[paths[j]];	// Iterate deeper into the object
             }
-            itemClone = itemClone[paths[j]];	// Iterate deeper into the object
           }
           coordinates[i] = itemClone;
         }
-        geom.type = gtype;
-        geom.coordinates = [Number(coordinates[1]), Number(coordinates[0]), Number(coordinates[2])];
+        if (geom !== false) {
+          geom = {
+            type: gtype,
+            coordinates: [Number(coordinates[1]), Number(coordinates[0]), Number(coordinates[2])]
+          };
+        }
       }
 
       // Geometry parameter specified as: {Point: ['container.lat', 'container.lng']}
@@ -250,20 +291,29 @@
           itemClone = item;
           for (var l = 0; l < paths.length; l++) {
             if (itemClone == undefined || !itemClone.hasOwnProperty(paths[l])) {
-              return false;
+              k = val.length;
+              l = paths.length;
+              geom = false;
+            } else {
+              itemClone = itemClone[paths[l]];	// Iterate deeper into the object
             }
-            itemClone = itemClone[paths[l]];	// Iterate deeper into the object
           }
           coordinates[k] = itemClone;
         }
-        geom.type = gtype;
-        geom.coordinates = [Number(coordinates[1]), Number(coordinates[0])];
+        if (geom !== false) {
+          geom = {
+            type: gtype,
+            coordinates: [Number(coordinates[1]), Number(coordinates[0])]
+          };
+        }
       }
 
       // Geometry parameter specified as: {Point: [{coordinates: [lat, lng]}]}
       else if (Array.isArray(val) && val[0].constructor.name === 'Object' && Object.keys(val[0])[0] === 'coordinates'){
-        geom.type = gtype;
-        geom.coordinates = [Number(item.coordinates[(val[0].coordinates).indexOf('lng')]), Number(item.coordinates[(val[0].coordinates).indexOf('lat')])];
+        geom = {
+          type: gtype,
+          coordinates: [Number(item.coordinates[(val[0].coordinates).indexOf('lng')]), Number(item.coordinates[(val[0].coordinates).indexOf('lat')])]
+        };
       }
     }
 
