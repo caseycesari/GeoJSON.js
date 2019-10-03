@@ -397,6 +397,28 @@ GeoJSON.parse(data, {
 });
 ```
 
+#### isGeometryValid
+
+If you would like to provide your own validation for geometries, you can include your own `isGeometryValid` validation function.  This will be used instead of the `GeoJSON.isGeometryValid` function.
+
+```javascript
+GeoJSON.parse(data, {
+  Point: ['lat', 'lng'],
+  removeInvalidGeometries: true,
+  isGeometryValid: customValidationFunction
+});
+```
+
+It may be easier to provide this function as a default, as mentioned above.  For example:
+
+```javascript
+GeoJSON.defaults.isGeometryValid = function(geometry){
+  // Validation logic
+};
+...
+GeoJSON.parse(data, {Point: ['lat', 'lng']});
+```
+
 ## Tests
 
 For node, `$ npm test`.

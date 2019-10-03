@@ -48,7 +48,7 @@
       geojson = {"type": "FeatureCollection", "features": []};
       objects.forEach(function(item){
         var feature = getFeature({item:item, params: settings, propFunc:propFunc});
-        if (settings.removeInvalidGeometries !== true || GeoJSON.isGeometryValid(feature.geometry)) {
+        if (settings.removeInvalidGeometries !== true || isValid(feature.geometry, settings.isGeometryValid)) {
           geojson.features.push(feature);
         }
       });
@@ -321,7 +321,7 @@
       }
     }
 
-    if(params.doThrows && params.doThrows.invalidGeometry && !GeoJSON.isGeometryValid(geom)){
+    if(params.doThrows && params.doThrows.invalidGeometry && !isValid(geom, params.isGeometryValid)){
       throw new InvalidGeometryError(item, params);
     }
 
@@ -377,6 +377,14 @@
     }
 
     return properties;
+  }
+
+  function isValid(geometry, custom) {
+    if (typeof custom === 'function') {
+      return custom(geometry);
+    } else {
+      return GeoJSON.isGeometryValid(geometry);
+    }
   }
 
 }(typeof module == 'object' ? module.exports : window.GeoJSON = {}));
