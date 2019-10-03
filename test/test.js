@@ -19,7 +19,7 @@ describe('GeoJSON', function() {
         }
       }
 
-      expect(count).to.be(1);
+      expect(count).to.be(2);
     });
   });
 
@@ -609,6 +609,18 @@ describe('GeoJSON', function() {
         expect(geojson.features[0].geometry.coordinates[0]).to.equal(-75.343);
         expect(geojson.features[0].geometry.coordinates[1]).to.equal(39.984);
         expect(geojson.features[0].geometry.coordinates[2]).to.equal(22026.46);
+        done();
+      });
+    });
+
+    it('will only return geometries that are valid.', function(done) {
+      data.push({ name: 'Location D', category: 'Station', street: 'Lower', coordinates: [39.984, -75.353] });
+      data.push({ name: 'Location E', category: 'Park', street: 'Main', lat: 39.984, lng: -75.353 } );
+
+      GeoJSON.parse(data, {Point: ['lng', 'lat'], removeInvalidGeometries: true}, function(geojson) {
+        expect(geojson.type).to.be('FeatureCollection');
+        expect(geojson.features).to.be.an('array');
+        expect(geojson.features.length).to.be(4);
         done();
       });
     });

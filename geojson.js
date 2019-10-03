@@ -5,7 +5,8 @@
   GeoJSON.defaults = {
     doThrows: {
       invalidGeometry: false
-    }
+    },
+    removeInvalidGeometries: false
   };
 
   function InvalidGeometryError() {
@@ -46,7 +47,10 @@
     if (Array.isArray(objects)) {
       geojson = {"type": "FeatureCollection", "features": []};
       objects.forEach(function(item){
-        geojson.features.push(getFeature({item:item, params: settings, propFunc:propFunc}));
+        var feature = getFeature({item:item, params: settings, propFunc:propFunc});
+        if (settings.removeInvalidGeometries !== true || GeoJSON.isGeometryValid(feature.geometry)) {
+          geojson.features.push(feature);
+        }
       });
       addOptionals(geojson, settings);
     } else {
