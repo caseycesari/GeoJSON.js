@@ -481,6 +481,57 @@ describe('GeoJSON', function() {
       });
     });
 
+    it('can accept nested arguments for Point', function(done) {
+      var data = [
+        { name: 'Location A', category: 'Store', location: { point: { lat: 39.984, lng: -75.343 } } }
+      ];
+
+      GeoJSON.parse(data, { Point: ['location.point.lat', 'location.point.lng'] }, function(geojson) {
+        expect(geojson.type).to.be('FeatureCollection');
+        expect(geojson.features).to.be.an('array');
+        expect(geojson.features.length).to.be(1);
+        expect(geojson.features[0].geometry.coordinates[0]).to.equal(-75.343);
+        expect(geojson.features[0].geometry.coordinates[1]).to.equal(39.984);
+        done();
+      });
+    });
+
+    it('can handle null or undefined values when parsing nested arguments', function(done) {
+      var data = [
+        { geo: null },
+        { geo: { line: [[102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0] ] } },
+        { geo: { polygon: [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ] } },
+        { geo: { multipoint: [ [100.0, 0.0], [101.0, 1.0] ] } },
+        { geo: { multipolygon: [ 
+            [[[102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0]]],
+            [[[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]],
+             [[100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2]]]
+        ]}},
+        { geo: { multilinestring: [ [ [100.0, 0.0], [101.0, 1.0] ], [ [102.0, 2.0], [103.0, 3.0] ] ] } }
+      ];
+
+      GeoJSON.parse(data, {
+        Point: ['geo.nope.point.lng', 'geo.nope.point.lat'],
+        LineString: 'geo.nope.line',
+        Polygon: 'geo.nope.polygon',
+        MultiPoint: 'geo.nope.multipoint',
+        MultiPolygon: 'geo.nope.multipolygon',
+        MultiLineString: 'geo.nope.multilinestring'
+      }, function(geojson) {
+        expect(geojson.type).to.be('FeatureCollection');
+        expect(geojson.features).to.be.an('array');
+        expect(geojson.features.length).to.be(6);
+        expect(geojson.features[0].geometry).to.be(false);
+        expect(geojson.features[1].geometry).to.be(false);
+        expect(geojson.features[2].geometry).to.be(false);
+        expect(geojson.features[3].geometry).to.be(false);
+        expect(geojson.features[4].geometry).to.be(false);
+        expect(geojson.features[5].geometry).to.be(false);
+        done();
+      });
+
+    });
+
     it('can accept up to three arguments for Point in a nested structure', function(done) {
       var data = [
         { name: 'Location A', category: 'Store', location: { lat: 39.984, lng: -75.343, alt: 22026.46 }, street: 'Market' },
