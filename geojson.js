@@ -325,7 +325,7 @@
       throw new InvalidGeometryError(item, params);
     }
 
-    return geom;
+    return geom.coordinates? geom : null;
   }
 
   // Returns the function to be used to
